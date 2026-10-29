@@ -61,7 +61,7 @@ BARYNT_DOCS_DIR=../Barynt/docs/guide bun run dev   # http://localhost:4321/docs/
 | `scripts/build.ts`             | Picks the release, reads its notes, fills the template, fetches the docs                                          |
 | `astro.config.mjs`             | Starlight for `/docs/` (and `/de/docs/`), from Barynt's `docs/guide/`                                             |
 | `src/components/`              | Starlight overrides: the start page's top bar, the lead under the title, the edit link                            |
-| `src/plugins/`                 | GitHub alerts → callouts, `.md` links, `.de`/`.light` image variants, `{{version}}`; the sidebar from `_groups.json` |
+| `src/plugins/`                 | GitHub alerts → callouts, `.md` links, `.light` image variants, `{{version}}`; the sidebar from `_groups.json` |
 | `src/styles/barynt.css`        | Barynt's colours and type on Starlight                                                                            |
 | `.github/workflows/deploy.yml` | Build and deploy on dispatch, by hand or on push                                                                  |
 | `public/media/`                | Screenshots and videos of the app, copied into `dist/` as they are                                                |

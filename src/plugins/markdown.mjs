@@ -29,20 +29,16 @@ export function githubAlerts() {
     });
 }
 
-/** `![…](../assets/x.png)` picks its variants by file name: `x.de.png` on
- *  German pages, `x.light.png` (or `x.de.light.png`) in light mode. Every
- *  variant is optional; `x.png` is the fallback. */
-export function themedImages(docs) {
+/** `![…](../assets/en/x.png)` shows `x.light.png` in light mode when that file
+ *  exists; `x.png` is the dark one and the fallback. Each language has its own
+ *  folder (`assets/en/`, `assets/de/`) and its pages link their own. */
+export function themedImages() {
   return () => (tree, file) => {
     const page = file.path || file.history?.[0] || "";
-    const german = pageIn(docs, file).startsWith("de/");
     walk(tree, (node, i, parent) => {
       if (node.type !== "image" || /^(https?:|\/)/.test(node.url)) return;
-      const at = (suffix) => node.url.replace(/(\.[a-z0-9]+)$/i, `${suffix}$1`);
-      const exists = (url) => existsSync(resolve(dirname(page), url));
-      const light = [german && at(".de.light"), at(".light")].find((u) => u && exists(u));
-      if (german && exists(at(".de"))) node.url = at(".de");
-      if (!light) return;
+      const light = node.url.replace(/(\.[a-z0-9]+)$/i, ".light$1");
+      if (!existsSync(resolve(dirname(page), light))) return;
       node.data = { hProperties: { class: "light:sl-hidden" } };
       parent.children.splice(i + 1, 0, { type: "image", url: light, alt: node.alt, data: { hProperties: { class: "dark:sl-hidden" } } });
       return false;
