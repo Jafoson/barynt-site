@@ -1,6 +1,7 @@
 # Capture kit
 
-Records the screenshots and videos in `public/media/<lang>/` from a running
+Records the screenshots and videos in `public/media/<lang>/` (dark) and
+`public/media/<lang>/light/` from a running
 Barynt with the seed data (workspace "Nimbus"). Run it again when the app's
 look changes; the files are committed, the build only copies them.
 
@@ -26,6 +27,8 @@ pg_restore -l .snapshot/db.dump | grep -v _prisma_migrations > .snapshot/db.list
 
 # 3. record (videos change data; the snapshot is restored around each one)
 node produce.js en && node produce.js de && node phones.js
+# the same in light mode (→ out/<lang>/light/)
+THEME=light node produce.js en && THEME=light node produce.js de && THEME=light node phones.js
 # 4. encode into public/media — see encode.sh
 ./encode.sh
 ```

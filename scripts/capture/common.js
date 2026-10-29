@@ -4,7 +4,7 @@ const UID = process.env.CAPTURE_USER_ID || 'u0d7e2172-d330-4e4a-918d-597f7669f4c
 exports.BASE = process.env.BARYNT_URL || 'http://localhost:3000';
 exports.open = async (opts = {}) => {
   const b = await chromium.launch();
-  const ctx = await b.newContext({ viewport: { width: 1600, height: 900 }, colorScheme: 'dark', locale: 'en-US', deviceScaleFactor: 1, userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', ...opts });
+  const ctx = await b.newContext({ viewport: { width: 1600, height: 900 }, colorScheme: process.env.THEME === 'light' ? 'light' : 'dark', locale: 'en-US', deviceScaleFactor: 1, userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', ...opts });
   await ctx.addCookies([{ name: 'authjs.session-token', value: tok, domain: 'localhost', path: '/' }, { name: 'barynt_seen_release', value: '1.0.12', domain: 'localhost', path: '/' }]);
   await ctx.addInitScript(() => { try { Object.defineProperty(navigator, 'platform', { get: () => 'MacIntel' }); } catch {} });
   await ctx.addInitScript((uid) => { try { localStorage.setItem(`barynt:passkeyNudgeDismissed:${uid}`, '1'); } catch {} }, UID);

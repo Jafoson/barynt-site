@@ -5,7 +5,8 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const L = process.argv[2] || 'en';
 const ONLY = process.argv[3];
-const OUT = `${__dirname}/out/${L}`; fs.mkdirSync(OUT, { recursive: true });
+const THEME = process.env.THEME === 'light' ? 'light' : 'dark';
+const OUT = `${__dirname}/out/${L}${THEME === 'light' ? '/light' : ''}`; fs.mkdirSync(OUT, { recursive: true });
 const T = {
   en: { d90: '90 days', d7: '7 days', mine: 'Mine', all: 'All', todo: 'Todo', prog: 'In Progress', comment: 'Picked this up, first draft is on a branch.', search: 'safari' },
   de: { d90: '90 Tage', d7: '7 Tage', mine: 'Meine', all: 'Alle', todo: 'Todo', prog: 'In Progress', comment: 'Hab ich übernommen, ein erster Entwurf liegt auf einem Branch.', search: 'safari' },
@@ -45,6 +46,7 @@ async function video(name, path, act, { w = 1600, h = 1000 } = {}) {
 }
 
 (async () => {
+  reset();
   // ── Hero videos (16:10) ──
   await video('hero-dashboard', '/dashboard', async (p, w, h) => {
     let at = [w * 0.62, h * 0.9];

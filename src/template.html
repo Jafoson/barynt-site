@@ -234,7 +234,10 @@ kbd { display: inline-grid; place-items: center; min-width: 1.5rem; height: 1.5r
 /* Real screenshots and recordings of the app, per language (media/<lang>/). */
 .shot.media { display: block; width: 100%; height: auto; object-fit: cover; object-position: left top; background: var(--surface-container); }
 .slide .shot.media { aspect-ratio: 2 / 1; }
-.article .shot.media { aspect-ratio: auto; border-radius: 0.875rem; box-shadow: var(--widget-shadow); }
+.article .shot.media { aspect-ratio: auto; border-radius: 0.875rem; box-shadow: var(--widget-shadow); border: 1px solid color-mix(in srgb, var(--outline) 55%, transparent); }
+/* A clear edge around each carousel card, so the dark screenshots stand off the page. */
+.slide { border: 1px solid color-mix(in srgb, var(--outline) 55%, transparent); }
+.slide .shot.media { border-bottom: 1px solid color-mix(in srgb, var(--outline) 40%, transparent); }
 .widget.float { position: absolute; width: 13.5rem; z-index: 2; }
 .widget.float.a { right: -1.5rem; top: 4rem; animation: bob 7s ease-in-out infinite; }
 .widget.float.b { left: -2rem; bottom: 0; width: 15rem; animation: bob 8s ease-in-out -3s infinite; }
@@ -331,6 +334,44 @@ kbd { display: inline-grid; place-items: center; min-width: 1.5rem; height: 1.5r
 .rn h2 { font-size: 1.125rem; margin: 1.5rem 0 0.5rem; }
 .rn img { display: block; max-width: 100%; height: auto; margin: 1rem 0; border-radius: 0.875rem; box-shadow: var(--widget-shadow); }
 .rn p:first-child strong { font-size: 1.0625rem; }
+
+/* ── Release notes page ── */
+.rel { padding-block: 2.5rem 4rem; max-width: 60rem; }
+.rel-head { display: grid; gap: 0.625rem; margin-bottom: 1.75rem; }
+.rel-head h1 { font-size: clamp(2.25rem, 5vw, 3.25rem); letter-spacing: -0.04em; font-weight: 800; line-height: 1.05; }
+.rel-head .lead { font-size: 1.125rem; color: var(--on-surface-variant); max-width: 40rem; }
+.rel-nav { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 3.75rem); z-index: 5; display: flex; gap: 0.5rem; overflow-x: auto; padding-block: 0.75rem; margin-bottom: 1.5rem; background: var(--surface); border-bottom: 1px solid var(--outline-variant); scrollbar-width: none; }
+.rel-nav::-webkit-scrollbar { display: none; }
+.rel-nav a { flex: none; display: grid; gap: 0.0625rem; padding: 0.5rem 0.875rem; border-radius: 0.875rem; text-decoration: none; background: var(--surface-container-low); box-shadow: inset 0 0 0 1px var(--outline-variant); }
+.rel-nav a b { display: flex; align-items: center; gap: 0.375rem; font: 700 0.9375rem var(--font-mono); }
+.rel-nav a span { font-size: 0.75rem; color: var(--on-surface-variant); }
+.rel-nav a:hover { background: var(--surface-container); }
+.rel-nav a[aria-current="page"] { background: var(--primary-container); color: var(--on-primary-container); box-shadow: none; }
+.rel-nav a[aria-current="page"] span { color: inherit; opacity: 0.8; }
+.rel-nav em { font: 700 0.5625rem var(--font-ui); font-style: normal; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.0625rem 0.375rem; border-radius: var(--pill); background: var(--tertiary-container); color: var(--on-tertiary-container); }
+.rel-body { min-width: 0; }
+.rel-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1rem; margin-bottom: 0.25rem; }
+.rel-title h2 { font-size: 2rem; letter-spacing: -0.03em; font-weight: 800; }
+.rel-body .rn { font-size: 1rem; line-height: 1.7; }
+.rel-body .rn h2 { font-size: 1.375rem; margin: 2rem 0 0.75rem; }
+.rel-body .rn ul { padding-left: 1.25rem; display: grid; gap: 0.375rem; }
+.rel-body .rn p + p { margin-top: 0.75rem; }
+.rel-body .rn code { font-size: 0.85em; padding: 0.0625rem 0.375rem; border-radius: 0.3125rem; background: var(--surface-container-high); }
+.rel-install { margin-top: 2.5rem; padding: 1.25rem 1.375rem; border-radius: var(--radius-widget); background: var(--surface-container-low); box-shadow: inset 0 0 0 1px var(--outline-variant); display: grid; gap: 0.875rem; }
+.rel-install h3 { font-size: 1.25rem; letter-spacing: -0.02em; }
+.rel-install > p { color: var(--on-surface-variant); }
+.rel-install .tt-out { padding: 0; min-height: 0; }
+.rel-install .tt-out .cl-row { margin-inline: -0.625rem 0; }
+.rel-links { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.rel-links a { display: inline-flex; align-items: center; gap: 0.375rem; height: 2rem; padding: 0 0.75rem; border-radius: var(--pill); background: var(--surface-container-high); font-size: 0.8125rem; font-weight: 600; text-decoration: none; }
+.rel-links a:hover { background: var(--surface-container-highest); }
+.rel-install.none { background: transparent; }
+.rel-pager { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; margin-top: 2.5rem; }
+.rel-pager a { display: grid; gap: 0.25rem; padding: 1rem 1.125rem; border-radius: 1rem; background: var(--surface-container-low); text-decoration: none; }
+.rel-pager a:hover { background: var(--surface-container); }
+.rel-pager small { font-size: 0.75rem; color: var(--on-surface-variant); }
+.rel-pager b { color: var(--primary); }
+.rel-pager .next { grid-column: 2; text-align: right; }
 
 /* language switch */
 .langbtn { display: inline-flex; gap: 0.125rem; padding: 0.1875rem; border: 0; border-radius: var(--pill); background: var(--surface-container-high); cursor: pointer; }
@@ -1080,7 +1121,7 @@ footer .about { display: grid; gap: 0.75rem; align-content: start; color: var(--
       <a href="#start" data-route="start">Product</a>
       <a href="#docs" data-route="docs">Docs</a>
       <a href="#docs-mcp" data-route="docs">MCP &amp; API</a>
-      <a href="#docs-releases" data-route="docs">Changelog</a>
+      <a href="#releases" data-route="releases">Changelog</a>
     </nav>
     <div class="spacer"></div>
     <button class="langbtn" id="langBtn" type="button" aria-label="Sprache wechseln / Switch language"><span data-l="en">EN</span><span data-l="de">DE</span></button>
@@ -1363,7 +1404,7 @@ claude mcp add --transport http \
       <article class="widget W strip" data-accent="pink" data-bg="gradient">
         <div class="w-head" style="flex:none"><svg class="ico"><use href="#i-gift"/></svg>Latest release</div>
         <div style="min-width:0"><div class="w-title">__RELEASE_TITLE__</div><div class="sub noNarrow">Release notes and update notices appear right in the app.</div></div>
-        <div class="row"><a class="chip" href="#docs-releases">Read the notes →</a></div>
+        <div class="row"><a class="chip" href="#releases">Read the notes →</a></div>
       </article>
 
     </div></div>
@@ -1439,6 +1480,18 @@ claude mcp add --transport http \
   </section>
 </main>
 
+<!-- ═══════════════ RELEASE NOTES ═══════════════ -->
+<main id="view-releases" hidden>
+  <div class="wrap rel">
+    <header class="rel-head">
+      <span class="eyebrow">Changelog</span>
+      <h1>Release notes</h1>
+    </header>
+    <nav class="rel-nav" id="relNav" aria-label="Versions"></nav>
+    <article class="rel-body" id="relBody"></article>
+  </div>
+</main>
+
 <!-- ═══════════════ DOCS ═══════════════ -->
 <main id="view-docs" hidden>
   <div class="wrap docs">
@@ -1458,7 +1511,7 @@ claude mcp add --transport http \
       <span>The open-source issue tracker you host yourself.</span>
       <span style="font-size:.75rem">MIT License · v__VERSION__</span>
     </div>
-    <div><h4>Product</h4><ul><li><a href="#start">Overview</a></li><li><a href="#docs-dashboards">Dashboards</a></li><li><a href="#docs-shortcuts">Shortcuts</a></li><li><a href="#docs-releases">Changelog</a></li></ul></div>
+    <div><h4>Product</h4><ul><li><a href="#start">Overview</a></li><li><a href="#docs-dashboards">Dashboards</a></li><li><a href="#docs-shortcuts">Shortcuts</a></li><li><a href="#releases">Changelog</a></li></ul></div>
     <div><h4>Docs</h4><ul><li><a href="#docs-install">Installer</a></li><li><a href="#docs-compose">Docker Compose</a></li><li><a href="#docs-helm">Kubernetes</a></li><li><a href="#docs-mcp">MCP server</a></li><li><a href="#docs-api">REST API</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="https://github.com/Jafoson/Barynt" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/Jafoson/Barynt/issues" target="_blank" rel="noopener">Issues</a></li><li><a href="https://github.com/Jafoson/Barynt/blob/main/LICENSE" target="_blank" rel="noopener">License</a></li></ul></div>
   </div>
@@ -1470,14 +1523,17 @@ claude mcp add --transport http \
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
   var LANG = "en";
-  /* Point every [data-media] element at media/<lang>/: screenshots as .webp,
-     recordings as .mp4 with a .webp poster. */
+  /* Point every [data-media] element at media/<lang>/ (dark) or
+     media/<lang>/light/: screenshots as .webp, recordings as .mp4 with a
+     .webp poster. */
+  const isLight = () => { const t = document.documentElement.dataset.theme; return t ? t === "light" : matchMedia("(prefers-color-scheme: light)").matches; };
   function applyMedia(root = document) {
+    const dir = `media/${LANG}${isLight() ? "/light" : ""}`;
     root.querySelectorAll("[data-media]").forEach((el) => {
-      const base = `media/${LANG}/${el.dataset.media}`;
+      const base = `${dir}/${el.dataset.media}`;
       if (el.tagName === "VIDEO") {
-        if (el.dataset.lang === LANG) return;
-        el.dataset.lang = LANG;
+        if (el.dataset.dir === dir) return;
+        el.dataset.dir = dir;
         el.poster = `${base}-poster.webp`;
         el.src = `${base}.mp4`;
         if (el.classList.contains("on") && !matchMedia("(prefers-reduced-motion: reduce)").matches) el.play().catch(() => {});
@@ -1496,7 +1552,7 @@ claude mcp add --transport http \
     ["Using Barynt", [["issues", "Issues & projects"], ["views", "Views"], ["dashboards", "Dashboards", true], ["shortcuts", "Keyboard shortcuts"]]],
     ["Administration", [["roles", "Roles & permissions"], ["sso", "Sign-in & SSO"], ["email", "Email"], ["storage", "Object storage"]]],
     ["Integrations", [["mcp", "MCP server"], ["api", "REST API"], ["webhooks", "Webhooks"]]],
-    ["Project", [["releases", "Release notes"], ["contributing", "Contributing"]]],
+    ["Project", [["contributing", "Contributing"]]],
   ];
   const FLAT = NAV.flatMap(([g, items]) => items.map(([slug, title]) => ({ slug, title, group: g })));
 
@@ -1699,19 +1755,64 @@ curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)
     if (a) { e.preventDefault(); document.getElementById(a.dataset.to)?.scrollIntoView({ block: "start" }); }
   });
 
-  /* ── Router: #start, #docs, #docs-<slug>, plus in-page sections ── */
+  /* ── Release notes page: one version at a time, the installer for it below ── */
+  const REL_DE = {
+    "Release notes": "Release Notes", "Changelog": "Changelog",
+    "Latest": "Neueste", "Versions": "Versionen", "on GitHub": "auf GitHub",
+    "Install this release": "Dieses Release installieren",
+    "Each command installs or upgrades to exactly this version.": "Jeder Befehl installiert genau diese Version oder aktualisiert darauf.",
+    "New server": "Neuer Server", "Existing installation": "Bestehende Installation", "Kubernetes": "Kubernetes",
+    "Checksums": "Prüfsummen", "Signature": "Signatur", "All files": "Alle Dateien",
+    "No one-line installer for this release": "Kein Ein-Zeilen-Installer für dieses Release",
+    "The installer arrived with a later release. This version runs with Docker Compose and its image:": "Der Installer kam mit einem späteren Release. Diese Version läuft mit Docker Compose und ihrem Image:",
+    "The Docker image of this version": "Das Docker-Image dieser Version", "Docker Compose guide": "Anleitung für Docker Compose",
+    "Newer": "Neuer", "Older": "Älter", "Copy command": "Befehl kopieren",
+  };
+  const relSlug = (v) => "release-" + v.replace(/\./g, "-");
+  const relDate = (d) => new Date(d).toLocaleDateString(LANG === "de" ? "de-DE" : "en-GB", { day: "numeric", month: "long", year: "numeric" });
+  const relCmd = (c, cmd) => `<div class="cl"><span class="d no-tr"># ${T(c)}</span><div class="cl-row"><span class="p">$ </span><code>${cmd.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</code><button type="button" class="lcopy" data-cmd="${cmd.replace(/"/g, "&quot;")}" aria-label="Copy command">Copy</button></div></div>`;
+  function renderRelease(h) {
+    const notes = RELEASE.notes;
+    if (!notes.length) { $("#relBody").innerHTML = ""; return; }
+    let i = notes.findIndex((n) => relSlug(n.version) === h);
+    if (i < 0) i = 0;
+    const n = notes[i], v = n.version;
+    $("#relNav").innerHTML = notes.map((x, j) => `<a href="#${relSlug(x.version)}"${j === i ? ' aria-current="page"' : ""}><b>${x.version}${j === 0 ? "<em>Latest</em>" : ""}</b><span class="no-tr">${relDate(x.date)}</span></a>`).join("");
+    const inst = n.installer
+      ? `<section class="rel-install"><h3>Install this release</h3><p>Each command installs or upgrades to exactly this version.</p>
+          <div class="tt-out">${relCmd("New server", `curl -fsSL ${n.installer.script} | sh`)}${relCmd("Existing installation", `barynt upgrade --version ${v}`)}${relCmd("Kubernetes", `helm upgrade --install barynt oci://ghcr.io/jafoson/charts/barynt --version ${v}`)}</div>
+          <div class="rel-links">${n.installer.sums ? `<a href="${n.installer.sums}" target="_blank" rel="noopener">Checksums</a>` : ""}${n.installer.signature ? `<a href="${n.installer.signature}" target="_blank" rel="noopener">Signature</a>` : ""}<a href="${n.url}" target="_blank" rel="noopener">All files</a></div></section>`
+      : `<section class="rel-install none"><h3>No one-line installer for this release</h3><p>The installer arrived with a later release. This version runs with Docker Compose and its image:</p>
+          <div class="tt-out">${relCmd("The Docker image of this version", `docker pull ghcr.io/jafoson/barynt:${v}`)}</div>
+          <div class="rel-links"><a href="#docs-compose">Docker Compose guide</a><a href="${n.url}" target="_blank" rel="noopener">GitHub</a></div></section>`;
+    const newer = notes[i - 1], older = notes[i + 1];
+    $("#relBody").innerHTML = `<div class="rel-title"><h2 class="no-tr">Barynt ${v}</h2><span class="rn-meta no-tr">${relDate(n.date)} · <a href="${n.url}" target="_blank" rel="noopener">GitHub</a></span></div>
+      <div class="rn no-tr">${(LANG === "de" && n.de) || n.en}</div>${inst}
+      <div class="rel-pager">${newer ? `<a href="#${relSlug(newer.version)}"><small>Newer</small><b class="no-tr">← ${newer.version}</b></a>` : ""}${older ? `<a class="next" href="#${relSlug(older.version)}"><small>Older</small><b class="no-tr">${older.version} →</b></a>` : ""}</div>`;
+    applyMedia($("#relBody"));
+  }
+  $("#relBody").addEventListener("click", (e) => {
+    const b = e.target.closest(".lcopy"); if (!b) return;
+    const done = (t) => { b.textContent = t; setTimeout(() => (b.textContent = "Copy"), 1400); };
+    try { navigator.clipboard.writeText(b.dataset.cmd).then(() => done("Copied"), () => done("Copy")); } catch { done("Copy"); }
+  });
+
+  /* ── Router: #start, #docs, #docs-<slug>, #releases, plus in-page sections ── */
   const SECTIONS = ["features", "views", "host", "learn"];
   function route() {
     const h = location.hash.slice(1);
     const isDocs = h === "docs" || h.startsWith("docs-");
-    $("#view-start").hidden = isDocs;
+    const isRel = h === "releases" || h.startsWith("release-");
+    $("#view-start").hidden = isDocs || isRel;
     $("#view-docs").hidden = !isDocs;
+    $("#view-releases").hidden = !isRel;
     document.querySelectorAll("#nav a").forEach((a) => {
-      const on = isDocs ? a.getAttribute("href") === "#" + h || (a.dataset.route === "docs" && h === "docs" && a.getAttribute("href") === "#docs") : a.dataset.route === "start";
+      const on = isRel ? a.dataset.route === "releases" : isDocs ? a.getAttribute("href") === "#" + h || (a.dataset.route === "docs" && h === "docs" && a.getAttribute("href") === "#docs") : a.dataset.route === "start";
       if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
     });
     $("#nav").classList.remove("open");
     if (isDocs) { renderDoc(h === "docs" ? "intro" : h.slice(5)); window.scrollTo(0, 0); }
+    else if (isRel) { renderRelease(h); window.scrollTo(0, 0); }
     else if (SECTIONS.includes(h)) document.getElementById(h).scrollIntoView();
     else window.scrollTo(0, 0);
   }
@@ -2305,7 +2406,9 @@ curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)
     const r = document.documentElement;
     const dark = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
     r.dataset.theme = dark ? "light" : "dark";
+    applyMedia();
   });
+  matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => applyMedia());
   $("#burger").addEventListener("click", (e) => {
     const open = $("#nav").classList.toggle("open"); e.currentTarget.setAttribute("aria-expanded", open);
   });
@@ -3306,7 +3409,7 @@ curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)
     [/^(.+) →$/, (m) => (DE[m[1]] || m[1]) + " →"],
     [/^(\d+) of (\d+): (.+)$/, (m) => `${m[1]} von ${m[2]}: ${DE[m[3]] || m[3]}`],
   ];
-  Object.assign(DE, RELEASE.dict);
+  Object.assign(DE, REL_DE, RELEASE.dict);
   function deOf(key) {
     if (DE[key] != null) return DE[key];
     for (const [re, f] of PAT) { const m = key.match(re); if (m) return f(m); }
@@ -3352,7 +3455,7 @@ curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)
     try { localStorage.setItem("barynt-lang", LANG); } catch {}
     trTree(document.body);
     applyMedia();
-    if (location.hash === "#docs-releases") renderDoc("releases");
+    if (!$("#view-releases").hidden) renderRelease(location.hash.slice(1));
     document.querySelectorAll(".langs span").forEach((s) => s.classList.toggle("on", s.textContent.trim() === LANG.toUpperCase()));
   }
   $("#langBtn").addEventListener("click", () => setLang(LANG === "de" ? "en" : "de"));
@@ -3361,3 +3464,4 @@ curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)
   setLang(startLang);
 })();
 </script>
+
