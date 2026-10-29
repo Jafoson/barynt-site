@@ -1,0 +1,76 @@
+name: Build and deploy
+
+# Rebuilds the site for a Barynt release and publishes it on GitHub Pages.
+#
+# - Barynt's release workflow sends `repository_dispatch` (type
+#   `barynt-release`, payload `{ "version": "X.Y.Z" }`) once the release, its
+#   image and its chart are out — the site then shows exactly that version.
+# - Actions → "Build and deploy" → Run workflow: by hand, optionally for a
+#   given version (empty = the newest published release).
+# - A push to main (template or build changes) rebuilds for the newest release.
+
+on:
+  repository_dispatch:
+    types: [barynt-release]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Barynt version, e.g. 1.0.13 (empty = newest release)"
+        required: false
+        type: string
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+
+      - run: bun install --frozen-lockfile
+
+      # Inputs through the environment, never pasted into the shell text.
+      - name: Build
+        env:
+          BARYNT_VERSION: ${{ github.event.client_payload.version || inputs.version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SITE_CNAME: ${{ vars.SITE_CNAME }}
+        run: bun run build
+
+      - name: Summary
+        run: |
+          {
+            echo "## Site built"
+            echo
+            echo '```json'
+            cat dist/release.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
