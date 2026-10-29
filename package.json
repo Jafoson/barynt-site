@@ -3,10 +3,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "bun scripts/build.ts",
-    "preview": "bun scripts/build.ts && bunx serve dist"
+    "build": "bun scripts/build.ts && bun --bun astro build",
+    "dev": "bun scripts/build.ts && bun --bun astro dev",
+    "preview": "bun --bun astro preview"
   },
   "dependencies": {
-    "marked": "14.1.4"
+    "@astrojs/markdown-remark": "7.3.5",
+    "@astrojs/starlight": "0.42.7",
+    "astro": "7.4.4",
+    "marked": "14.1.4",
+    "sharp": "0.35.5"
   }
 }

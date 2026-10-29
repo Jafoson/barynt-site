@@ -8,6 +8,8 @@ name: Build and deploy
 # - Actions → "Build and deploy" → Run workflow: by hand, optionally for a
 #   given version (empty = the newest published release).
 # - A push to main (template or build changes) rebuilds for the newest release.
+#
+# The docs are Barynt's docs/guide/ at the same tag (Starlight, /docs/).
 
 on:
   repository_dispatch:
@@ -46,6 +48,8 @@ jobs:
           BARYNT_VERSION: ${{ github.event.client_payload.version || inputs.version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SITE_CNAME: ${{ vars.SITE_CNAME }}
+          # Where the docs come from when the tag predates docs/guide/.
+          DOCS_REF: ${{ vars.DOCS_REF }}
         run: bun run build
 
       - name: Summary

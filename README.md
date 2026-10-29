@@ -1,6 +1,6 @@
 # barynt-site
 
-Start page and documentation for [Barynt](https://github.com/Jafoson/Barynt),
+Start page and documentation ([Starlight](https://starlight.astro.build)) for [Barynt](https://github.com/Jafoson/Barynt),
 the open-source issue tracker you host yourself. English and German.
 
 The site is built for one Barynt release at a time. Everything that depends on
@@ -15,7 +15,7 @@ Barynt: Actions → Release (publish)
   → GitHub release vX.Y.Z, Docker image, Helm chart
   → repository_dispatch "barynt-release" { version: "X.Y.Z" } to this repo
 barynt-site: "Build and deploy"
-  → bun run build with BARYNT_VERSION=X.Y.Z → dist/
+  → bun run build with BARYNT_VERSION=X.Y.Z: notes and docs/guide/ at vX.Y.Z → dist/
   → GitHub Pages
 ```
 
@@ -36,26 +36,47 @@ only skips this step.
 
 ```sh
 bun install
-bun run build                        # newest Barynt release
+bun run build                        # newest Barynt release → dist/
 BARYNT_VERSION=1.0.12 bun run build  # a given one
+bun run preview                      # serve dist/
 ```
 
-`dist/index.html` is the whole site. Set `GITHUB_TOKEN` if you hit the API's
-rate limit.
+`scripts/build.ts` prepares the release (start page → `public/index.html`,
+release images, Barynt's `docs/guide/` at the tag → `.barynt/`), then
+`astro build` builds everything into `dist/`. Set `GITHUB_TOKEN` if you hit
+the API's rate limit.
+
+Writing docs: they live in the Barynt repository (`docs/guide/`, see its
+README). To see your changes while you write, point the site at your clone:
+
+```sh
+BARYNT_DOCS_DIR=../Barynt/docs/guide bun run dev   # http://localhost:4321/docs/
+```
 
 ## Where things are
 
-| Path                             | What                                                                                            |
-| -------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `src/template.html`              | The page: start page, docs, widgets, German dictionary. `__VERSION__` and the release data block are filled in by the build |
-| `scripts/build.ts`               | Picks the release, reads its notes, fills the template, writes `dist/`                          |
-| `.github/workflows/deploy.yml`   | Build and deploy on dispatch, by hand or on push                                                |
-| `public/media/`                  | Screenshots and videos of the app, copied into `dist/` as they are                              |
-| `scripts/capture/`               | Records `public/media/` from a running Barynt                                                   |
+| Path                           | What                                                                                                              |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `src/template.html`            | The start page and release notes: widgets, German dictionary. `__VERSION__` and the release data are filled in by the build |
+| `scripts/build.ts`             | Picks the release, reads its notes, fills the template, fetches the docs                                          |
+| `astro.config.mjs`             | Starlight for `/docs/` (and `/de/docs/`), from Barynt's `docs/guide/`                                             |
+| `src/components/`              | Starlight overrides: the start page's top bar, the lead under the title, the edit link                            |
+| `src/plugins/`                 | GitHub alerts → callouts, `.md` links, `.de`/`.light` image variants, `{{version}}`; the sidebar from `_groups.json` |
+| `src/styles/barynt.css`        | Barynt's colours and type on Starlight                                                                            |
+| `.github/workflows/deploy.yml` | Build and deploy on dispatch, by hand or on push                                                                  |
+| `public/media/`                | Screenshots and videos of the app, copied into `dist/` as they are                                                |
+| `scripts/capture/`             | Records `public/media/` from a running Barynt                                                                     |
+
+The docs are read at the release tag. A tag from before `docs/guide/` existed
+falls back to the branch in the repository variable `DOCS_REF` (default
+`main`).
+
+The start page's search (⌘K / Ctrl K, or `/`) is Pagefind over the docs, the
+same index Starlight's own search uses.
 
 ### Translations
 
-English is the source. German lives in the `DE` dictionary at the end of
+The docs are translated in Barynt (`docs/guide/de/`). For the start page, English is the source. German lives in the `DE` dictionary at the end of
 `src/template.html`, keyed by the English text. A new or changed English sentence
 needs its German entry too, otherwise it stays English on the German page.
 Commands and code (`curl …`, `barynt …`) are never translated. Release notes

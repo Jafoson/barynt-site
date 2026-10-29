@@ -1,0 +1,8 @@
+---
+// Title plus the page's `description` as a lead, as the start page's docs did.
+import Default from "@astrojs/starlight/components/PageTitle.astro";
+const { description } = Astro.locals.starlightRoute.entry.data;
+---
+
+<Default />
+{description && <p class="b-lead">{description}</p>}

@@ -1,0 +1,45 @@
+---
+// The start page's top bar, so the docs are the same site. Search is
+// Starlight's own; language and theme are shared with the start page through
+// localStorage ("barynt-lang", and "starlight-theme", which Starlight reads).
+import Search from "virtual:starlight/components/Search";
+import { VERSION } from "../site.mjs";
+import Symbols from "./Symbols.astro";
+
+const path = Astro.url.pathname;
+const de = path.startsWith("/de/");
+const other = de ? path.slice(3) : `/de${path}`;
+const t = de
+  ? { product: "Produkt", docs: "Doku", log: "Changelog", star: "Auf GitHub sternen" }
+  : { product: "Product", docs: "Docs", log: "Changelog", star: "Star on GitHub" };
+---
+
+<Symbols />
+<div class="b-head" data-lang={de ? "de" : "en"}>
+  <a class="b-brand" href="/"><svg><use href="#logo" /></svg>Barynt <span class="b-tag">v{VERSION}</span></a>
+  <nav class="b-nav">
+    <a href="/">{t.product}</a>
+    <a href={de ? "/de/docs/" : "/docs/"} aria-current="page">{t.docs}</a>
+    <a href="/#releases">{t.log}</a>
+  </nav>
+  <div class="b-search"><Search /></div>
+  <div class="b-right">
+    <a class="b-lang" href={other} data-to={de ? "en" : "de"} aria-label="Sprache wechseln / Switch language"><span class:list={{ on: !de }}>EN</span><span class:list={{ on: de }}>DE</span></a>
+    <button class="b-icon" id="b-theme" type="button" aria-label="Toggle light and dark"><svg><use href="#i-sun" /></svg></button>
+    <a class="b-stars" href="https://github.com/Jafoson/Barynt" target="_blank" rel="noopener"><svg><use href="#i-star" /></svg><span>{t.star}</span></a>
+  </div>
+</div>
+
+<script>
+  const head = document.querySelector<HTMLElement>(".b-head");
+  const remember = (lang: string) => { try { localStorage.setItem("barynt-lang", lang); } catch {} };
+  // The language of the page you read is the one the start page opens in.
+  remember(head?.dataset.lang || "en");
+  document.querySelector<HTMLElement>(".b-lang")?.addEventListener("click", (e) => remember((e.currentTarget as HTMLElement).dataset.to || "en"));
+  document.getElementById("b-theme")?.addEventListener("click", () => {
+    const r = document.documentElement;
+    const next = r.dataset.theme === "light" ? "dark" : "light";
+    r.dataset.theme = next;
+    try { localStorage.setItem("starlight-theme", next); } catch {}
+  });
+</script>

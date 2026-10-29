@@ -1,17 +1,22 @@
-// Builds the start page and docs for one Barynt release.
+// Prepares the site for one Barynt release; `astro build` then builds it.
 //
 //   BARYNT_VERSION=1.0.13 bun run build    # a given release
 //   bun run build                          # the newest published release
 //
-// Everything version-bound comes from that release: the version shown in the
-// header, footer and commands, the "Latest release" widget and the release
-// notes page, read from releases/<version>.md (+ .de.md) at the tag v<version>
-// of the Barynt repository — the same files the app shows. Their images are
-// copied next to the page (dist/releases/assets/…), and a release that ships
-// the installer (install.sh as a release asset) gets its download links.
-// Output: dist/.
+// Everything version-bound comes from that release:
+// - the start page (src/template.html → public/index.html): the version in
+//   the header, footer and commands, the "Latest release" widget and the
+//   release notes page, read from releases/<version>.md (+ .de.md) at the tag
+//   v<version> of the Barynt repository — the same files the app shows. Their
+//   images are copied next to it (public/releases/assets/…), and a release
+//   that ships the installer (install.sh as a release asset) gets its links.
+// - the docs: Barynt's docs/guide/ at that tag → .barynt/docs/guide/, which
+//   Starlight reads. A tag from before the docs moved there falls back to
+//   DOCS_REF (default main). BARYNT_DOCS_DIR skips the download and uses a
+//   local folder instead.
 
-import { cp, mkdir, readFile, writeFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { marked } from "marked";
 
@@ -126,22 +131,42 @@ ${page}
 </body>
 </html>
 `;
-  await mkdir("dist", { recursive: true });
-  await writeFile("dist/index.html", html);
-  await writeFile("dist/release.json", JSON.stringify({ version, title: data.title, notes: notes.map((n) => ({ version: n.version, date: n.date, url: n.url })) }, null, 2));
-  await writeFile("dist/.nojekyll", "");
-  // Screenshots and recordings of the app (public/media/<lang>/), as they are.
-  await cp("public", "dist", { recursive: true });
+  // Generated next to the committed media; Astro copies public/ into dist/.
+  await writeFile("public/index.html", html);
+  await writeFile("public/release.json", JSON.stringify({ version, title: data.title, notes: notes.map((n) => ({ version: n.version, date: n.date, url: n.url })) }, null, 2));
+  await mkdir(".barynt", { recursive: true });
+  await writeFile(".barynt/release.json", JSON.stringify({ version }));
+  await rm("public/releases", { recursive: true, force: true });
   // The notes' images, from the tag that ships them.
   for (const { tag, path } of images) {
     const res = await rawRes(tag, `releases/${path}`);
     if (!res) { console.warn(`! ${tag} has no releases/${path}`); continue; }
-    const out = `dist/releases/${path}`;
+    const out = `public/releases/${path}`;
     await mkdir(dirname(out), { recursive: true });
     await writeFile(out, new Uint8Array(await res.arrayBuffer()));
   }
-  if (process.env.SITE_CNAME) await writeFile("dist/CNAME", `${process.env.SITE_CNAME}\n`);
-  console.log(`Built the site for Barynt ${version} (${notes.length} release notes, ${images.length} images).`);
+  if (process.env.SITE_CNAME) await writeFile("public/CNAME", `${process.env.SITE_CNAME}\n`);
+
+  let docs = process.env.BARYNT_DOCS_DIR ? `local ${process.env.BARYNT_DOCS_DIR}` : "";
+  if (!docs) {
+    const fallback = process.env.DOCS_REF || "main";
+    if (await fetchDocs(`v${version}`)) docs = `v${version}`;
+    else if (await fetchDocs(fallback)) docs = fallback;
+    else throw new Error(`Neither v${version} nor ${fallback} has docs/guide/ in ${REPO}.`);
+  }
+  console.log(`Prepared Barynt ${version}: ${notes.length} release notes, ${images.length} images, docs from ${docs}.`);
+}
+
+/** docs/guide/ of the Barynt repository at `ref` → .barynt/docs/guide/. */
+async function fetchDocs(ref: string): Promise<boolean> {
+  const res = await fetch(`https://codeload.github.com/${REPO}/tar.gz/${ref}`, { headers });
+  if (!res.ok) throw new Error(`Barynt at ${ref}: ${res.status}`);
+  await rm(".barynt/docs", { recursive: true, force: true });
+  await mkdir(".barynt", { recursive: true });
+  await writeFile(".barynt/source.tar.gz", new Uint8Array(await res.arrayBuffer()));
+  const tar = Bun.spawnSync(["tar", "-xzf", ".barynt/source.tar.gz", "-C", ".barynt", "--strip-components=1", "--wildcards", "*/docs/guide/*"]);
+  await rm(".barynt/source.tar.gz");
+  return tar.exitCode === 0 && existsSync(".barynt/docs/guide/_groups.json");
 }
 
 const escapeHtml = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

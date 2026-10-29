@@ -1,0 +1,12 @@
+---
+// "Edit page" opens the file in Barynt's docs/guide/, wherever the build
+// found the folder.
+import Default from "@astrojs/starlight/components/EditLink.astro";
+import { relative, resolve } from "node:path";
+import { DOCS_DIR } from "../site.mjs";
+
+const file = Astro.locals.starlightRoute.entry.filePath;
+if (file) Astro.locals.starlightRoute.editUrl = new URL(`https://github.com/Jafoson/Barynt/edit/main/docs/guide/${relative(DOCS_DIR, resolve(file))}`);
+---
+
+<Default />
