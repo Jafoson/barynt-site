@@ -39,7 +39,7 @@ export function mdLinks(docs) {
       const [path, hash] = node.url.split("#");
       if (!path.endsWith(".md") && !path.endsWith(".mdx")) return;
       const target = relative(docs, resolve(docs, dirname(page), path)).replace(/\.mdx?$/, "");
-      const url = target.startsWith("de/") ? `/de/docs/${target.slice(3)}/` : `/docs/${target}/`;
+      const url = target.startsWith("de/") ? `/de/docs/${target.slice(3)}/` : `/docs/${target.slice(3)}/`;
       node.url = url + (hash ? `#${hash}` : "");
     });
   };

@@ -76,7 +76,7 @@ same index Starlight's own search uses.
 
 ### Translations
 
-The docs are translated in Barynt (`docs/guide/de/`). For the start page, English is the source. German lives in the `DE` dictionary at the end of
+The docs are translated in Barynt (`docs/guide/de/`; English in `docs/guide/en/`). For the start page, English is the source. German lives in the `DE` dictionary at the end of
 `src/template.html`, keyed by the English text. A new or changed English sentence
 needs its German entry too, otherwise it stays English on the German page.
 Commands and code (`curl …`, `barynt …`) are never translated. Release notes

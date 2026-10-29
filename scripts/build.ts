@@ -178,7 +178,7 @@ async function fetchDocs(ref: string): Promise<boolean> {
  *  copied over from the other one, so a forgotten translation never breaks a
  *  page. */
 async function fillMissingImages(root: string) {
-  const pages = (await readdir(root, { recursive: true })).filter((f) => f.endsWith(".md"));
+  const pages = (await readdir(root, { recursive: true })).filter((f) => /^(en|de)\//.test(f) && f.endsWith(".md"));
   for (const page of pages) {
     const text = await readFile(join(root, page), "utf8");
     for (const [, url] of text.matchAll(/!\[[^\]]*\]\(([^)\s]+)\)/g)) {

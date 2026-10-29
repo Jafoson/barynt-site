@@ -9,7 +9,7 @@ export function sidebarFrom(dir) {
   if (!existsSync(file)) throw new Error(`No docs at ${dir} — run scripts/build.ts or set BARYNT_DOCS_DIR.`);
   const groups = JSON.parse(readFileSync(file, "utf8"));
   return Object.entries(groups).map(([folder, label]) => {
-    const path = join(dir, folder);
+    const path = join(dir, "en", folder);
     const pages = existsSync(path) ? readdirSync(path).filter((f) => /^[^_].*\.mdx?$/.test(f)) : [];
     const items = pages
       .map((f) => ({
