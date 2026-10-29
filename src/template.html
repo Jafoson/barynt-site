@@ -230,7 +230,11 @@ kbd { display: inline-grid; place-items: center; min-width: 1.5rem; height: 1.5r
 .window-bar { display: flex; align-items: center; gap: 0.375rem; height: 2.25rem; padding: 0 0.875rem; border-bottom: 1px solid color-mix(in srgb, var(--outline-variant) 50%, transparent); }
 .window-bar i { width: 0.625rem; height: 0.625rem; border-radius: 50%; background: var(--surface-container-highest); }
 .window-bar span { margin-left: 0.75rem; font: 500 0.6875rem var(--font-mono); color: var(--on-surface-variant); }
-.window .shot { border: 0; border-radius: 0; aspect-ratio: 16 / 8.5; }
+.window .shot { border: 0; border-radius: 0; aspect-ratio: 16 / 10; }
+/* Real screenshots and recordings of the app, per language (media/<lang>/). */
+.shot.media { display: block; width: 100%; height: auto; object-fit: cover; object-position: left top; background: var(--surface-container); }
+.slide .shot.media { aspect-ratio: 2 / 1; }
+.article .shot.media { aspect-ratio: auto; border-radius: 0.875rem; box-shadow: var(--widget-shadow); }
 .widget.float { position: absolute; width: 13.5rem; z-index: 2; }
 .widget.float.a { right: -1.5rem; top: 4rem; animation: bob 7s ease-in-out infinite; }
 .widget.float.b { left: -2rem; bottom: 0; width: 15rem; animation: bob 8s ease-in-out -3s infinite; }
@@ -244,7 +248,7 @@ kbd { display: inline-grid; place-items: center; min-width: 1.5rem; height: 1.5r
   .hero .lede { font-size: 1.0625rem; }
   .hero .trust { grid-column: 1 / -1; }
   .stage { padding: 1.5rem 0 2.5rem; }
-  .window .shot { aspect-ratio: 4 / 3.4; }
+  .window .shot { aspect-ratio: 16 / 10; }
   .widget.float.a { right: -1rem; top: 2.25rem; width: 12rem; }
   .widget.float.b { left: -1.75rem; bottom: 0; width: 11.5rem; height: 6.75rem !important; }
 }
@@ -1103,9 +1107,9 @@ footer .about { display: grid; gap: 0.75rem; align-content: start; color: var(--
       <div class="window">
         <div class="window-bar"><i></i><i></i><i></i><span id="aUrl">barynt.example.com/acme/dashboard</span></div>
         <div class="shots">
-          <div class="shot on" data-s="dash"><div class="lbl"><b>Screenshot or video: workspace dashboard</b><code>1920 × 1080 · .png or looping .mp4</code></div></div>
-          <div class="shot" data-s="board"><div class="lbl"><b>Screenshot or video: board view</b><code>1920 × 1080 · drag a card between columns</code></div></div>
-          <div class="shot" data-s="issue"><div class="lbl"><b>Screenshot or video: issue detail</b><code>1920 × 1080 · side panel with activity</code></div></div>
+          <video class="shot media on" data-s="dash" data-media="hero-dashboard" muted loop playsinline preload="auto" aria-label="The workspace dashboard switching between time ranges"></video>
+          <video class="shot media" data-s="board" data-media="hero-board" muted loop playsinline preload="metadata" aria-label="A card dragged from Todo to In Progress on the board"></video>
+          <video class="shot media" data-s="issue" data-media="hero-issue" muted loop playsinline preload="metadata" aria-label="An issue's status set to In Progress, then a comment written"></video>
         </div>
       </div>
 
@@ -1466,6 +1470,22 @@ claude mcp add --transport http \
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
   var LANG = "en";
+  /* Point every [data-media] element at media/<lang>/: screenshots as .webp,
+     recordings as .mp4 with a .webp poster. */
+  function applyMedia(root = document) {
+    root.querySelectorAll("[data-media]").forEach((el) => {
+      const base = `media/${LANG}/${el.dataset.media}`;
+      if (el.tagName === "VIDEO") {
+        if (el.dataset.lang === LANG) return;
+        el.dataset.lang = LANG;
+        el.poster = `${base}-poster.webp`;
+        el.src = `${base}.mp4`;
+        if (el.classList.contains("on") && !matchMedia("(prefers-reduced-motion: reduce)").matches) el.play().catch(() => {});
+      } else {
+        el.src = `${base}.webp`;
+      }
+    });
+  }
   /* Filled in by scripts/build.ts from the Barynt release the site is built for. */
   const RELEASE = /*__RELEASE_DATA__*/{"version":"1.0.12","title":{"en":"1.0.12","de":"1.0.12"},"dict":{},"notes":[]}/*__END__*/;
   function T(s) { try { return LANG === "de" && DE[s] != null ? DE[s] : s; } catch { return s; } }
@@ -1482,13 +1502,15 @@ claude mcp add --transport http \
 
   const INSTALL_URL = "https://github.com/Jafoson/Barynt/releases/latest/download/install.sh";
   const code = (id, lang, body) => `<div class="term"><div class="term-bar">${lang}<span class="spacer"></span><button class="copy" type="button" data-copy="${id}">Copy</button></div><pre id="${id}">${body}</pre></div>`;
-  const shot = (t, n) => `<div class="shot"><div class="lbl"><b>Screenshot: ${t}</b><code>${n}</code></div></div>`;
+  const shot = (t, n, media) => media
+    ? `<img class="shot media" data-media="${media}" alt="${t}" loading="lazy" width="1600" height="900">`
+    : `<div class="shot"><div class="lbl"><b>Screenshot: ${t}</b><code>${n}</code></div></div>`;
 
   const PAGES = {
     intro: {
       lead: "Barynt is an issue tracker you run yourself. Workspaces contain projects, projects contain issues, and statuses, priorities, issue types, labels and roles are configurable per workspace.",
       body: `
-        ${shot("workspace overview", "sidebar + board · 1600 × 900")}
+        ${shot("Workspace overview", "", "overview")}
         <h2 id="what">What you get</h2>
         <ul><li>Issues with rich text, sub-issues, relations and attachments</li><li>Board, list and dashboard views, saved and shared</li><li>Role-based access across platform, workspace and project</li><li>An in-app inbox with optional email per event</li><li>A REST API, webhooks and a remote MCP server</li></ul>
         <h2 id="stack">How it runs</h2>
@@ -1652,6 +1674,7 @@ curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)
       <h1>${page.title}</h1><p class="lead">${data.lead}</p>${data.body}
       <div class="pager">${prev ? `<a href="#docs-${prev.slug}"><small>Previous</small><b>← ${prev.title}</b></a>` : ""}${next ? `<a class="next" href="#docs-${next.slug}"><small>Next</small><b>${next.title} →</b></a>` : ""}</div>
       <div class="edit"><span>${T("Last updated with")} v${RELEASE.version}</span><a href="https://github.com/Jafoson/Barynt" target="_blank" rel="noopener">Edit this page on GitHub</a></div>`;
+    applyMedia($("#article"));
     side.querySelectorAll("a").forEach((a) => { if (a.dataset.slug === page.slug) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
     sel.value = page.slug;
 
@@ -1697,17 +1720,17 @@ curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)
 
   /* ── Carousel: screens of the app ── */
   const SLIDES = [
-    { n: "Board", tag: "Layout", t: "Move work across the board.", d: "Columns per status and cards you drag between them. Group by assignee, priority or label instead, whenever that tells the story better.", b: ["Drag & drop between columns and within them", "Filter chips for status, label, assignee", "Sub-issues on or off per view"], shot: ["board view", "columns by status · 1600 × 800"] },
-    { n: "List", tag: "Layout", t: "Every issue, one line each.", d: "Dense rows with real columns. Pick which ones show, resize them and act on an issue without touching the mouse.", b: ["Priority, ID, status, labels, assignee, updated", "Group and sort, collapse groups", "Shows as cards on a phone"], k: [["J", "K"], "move"], shot: ["list view", "grouped by status · 1600 × 800"] },
-    { n: "Dashboard", tag: "Layout", t: "The project at a glance.", d: "Widgets on a square grid, from a single number to a cumulative flow chart. For a project, for the workspace or arranged just for you.", b: ["24 widget kinds in fixed sizes", "Burn-up, cycle time, time in status, workload", "Notes, links, embeds and your own widgets"], shot: ["project dashboard", "8-column grid · 1600 × 800"] },
-    { n: "Custom views", tag: "Views", t: "Save the filter you keep rebuilding.", d: "Layout, filters, grouping and sorting saved as a view with its own name and icon. Keep it to yourself or share it.", b: ["Private, for the project or the whole workspace", "Shows up as a tab next to the defaults", "Unsaved changes are marked, never lost"], shot: ["custom view “My open bugs”", "view menu open · 1600 × 800"] },
-    { n: "Issue", tag: "Detail", t: "Everything about one issue.", d: "Open it in a side panel, as a full page or in a new tab. Description, activity and all properties sit together.", b: ["Rich text with mentions and #issue links", "Sub-issues, relations, attachments", "Public link to share one issue"], k: [["S", "P", "A"], "status · priority · assignee"], shot: ["issue in the side panel", "description + activity · 1600 × 800"] },
-    { n: "Command palette", tag: "Speed", t: "Go anywhere, do anything.", d: "Search issues, jump to a project or view and run actions from one box. Every shortcut is listed in the app and can be remapped.", b: ["Search across the workspace", "G then a letter to jump to a page", "? shows every shortcut"], k: [["⌘", "K"], "open"], shot: ["command palette", "search results · 1600 × 800"] },
-    { n: "Phone", tag: "Mobile", t: "The full app in your pocket.", d: "Not a cut-down companion. Sheets slide up from the bottom, the key fields stay pinned while you scroll and the editor opens in place.", b: ["Swipe sheets away", "Lists turn into cards", "Touch targets of at least 44 px"], shot: ["three phone screens side by side", "board · issue · inbox · 1600 × 800"] },
+    { n: "Board", tag: "Layout", t: "Move work across the board.", d: "Columns per status and cards you drag between them. Group by assignee, priority or label instead, whenever that tells the story better.", b: ["Drag & drop between columns and within them", "Filter chips for status, label, assignee", "Sub-issues on or off per view"], media: "board" },
+    { n: "List", tag: "Layout", t: "Every issue, one line each.", d: "Dense rows with real columns. Pick which ones show, resize them and act on an issue without touching the mouse.", b: ["Priority, ID, status, labels, assignee, updated", "Group and sort, collapse groups", "Shows as cards on a phone"], k: [["J", "K"], "move"], media: "list" },
+    { n: "Dashboard", tag: "Layout", t: "The project at a glance.", d: "Widgets on a square grid, from a single number to a cumulative flow chart. For a project, for the workspace or arranged just for you.", b: ["24 widget kinds in fixed sizes", "Burn-up, cycle time, time in status, workload", "Notes, links, embeds and your own widgets"], media: "dashboard" },
+    { n: "Custom views", tag: "Views", t: "Save the filter you keep rebuilding.", d: "Layout, filters, grouping and sorting saved as a view with its own name and icon. Keep it to yourself or share it.", b: ["Private, for the project or the whole workspace", "Shows up as a tab next to the defaults", "Unsaved changes are marked, never lost"], media: "views" },
+    { n: "Issue", tag: "Detail", t: "Everything about one issue.", d: "Open it in a side panel, as a full page or in a new tab. Description, activity and all properties sit together.", b: ["Rich text with mentions and #issue links", "Sub-issues, relations, attachments", "Public link to share one issue"], k: [["S", "P", "A"], "status · priority · assignee"], media: "issue" },
+    { n: "Command palette", tag: "Speed", t: "Go anywhere, do anything.", d: "Search issues, jump to a project or view and run actions from one box. Every shortcut is listed in the app and can be remapped.", b: ["Search across the workspace", "G then a letter to jump to a page", "? shows every shortcut"], k: [["⌘", "K"], "open"], media: "palette" },
+    { n: "Phone", tag: "Mobile", t: "The full app in your pocket.", d: "Not a cut-down companion. Sheets slide up from the bottom, the key fields stay pinned while you scroll and the editor opens in place.", b: ["Swipe sheets away", "Lists turn into cards", "Touch targets of at least 44 px"], media: "phone" },
   ];
   const track = $("#carTrack"), tabs = $("#carTabs");
   track.innerHTML = SLIDES.map((x, i) => `<figure class="slide" id="slide-${i}" aria-roledescription="slide" aria-label="${i + 1} of ${SLIDES.length}: ${x.n}">
-      <div class="shot"><div class="lbl"><b>Screenshot: ${x.shot[0]}</b><code>${x.shot[1]}</code></div></div>
+      <img class="shot media" data-media="${x.media}" alt="${x.t}" loading="lazy" width="1600" height="800">
       <figcaption>
         <div><span class="tag">${x.tag}</span><h3>${x.t}</h3><p>${x.d}</p>
           ${x.k ? `<div class="keys"><span>${x.k[0].map((k) => `<kbd>${k}</kbd>`).join("")} ${x.k[1]}</span></div>` : ""}</div>
@@ -1905,10 +1928,16 @@ curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)
         bub.insertAdjacentHTML("beforeend", '<span class="react pop">👍 2</span>');
       }
     }
+    const reduced0 = matchMedia("(prefers-reduced-motion: reduce)").matches;
     function heroShow(i) {
       hs = i; const name = ORDER[i]; run++;
       stage.dataset.s = name;
-      stage.querySelectorAll(".shots .shot").forEach((x) => x.classList.toggle("on", x.dataset.s === name));
+      stage.querySelectorAll(".shots .shot").forEach((x) => {
+        const on = x.dataset.s === name;
+        x.classList.toggle("on", on);
+        if (x.tagName !== "VIDEO") return;
+        if (on && !reduced0) { x.currentTime = 0; x.play().catch(() => {}); } else x.pause();
+      });
       $("#aUrl").textContent = "barynt.example.com/" + URLS[name];
       tabs.querySelectorAll("button").forEach((b) => { b.setAttribute("aria-selected", b.dataset.s === name); const i2 = b.querySelector("i"); i2.style.animation = "none"; void i2.offsetWidth; i2.style.animation = ""; });
       heroPlay(name, run);
@@ -3322,6 +3351,7 @@ curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)
     document.documentElement.lang = LANG;
     try { localStorage.setItem("barynt-lang", LANG); } catch {}
     trTree(document.body);
+    applyMedia();
     if (location.hash === "#docs-releases") renderDoc("releases");
     document.querySelectorAll(".langs span").forEach((s) => s.classList.toggle("on", s.textContent.trim() === LANG.toUpperCase()));
   }

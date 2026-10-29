@@ -8,7 +8,7 @@
 // notes page, read from releases/<version>.md (+ .de.md) at the tag v<version>
 // of the Barynt repository — the same files the app shows. Output: dist/.
 
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, writeFile } from "node:fs/promises";
 import { marked } from "marked";
 
 const REPO = process.env.BARYNT_REPO || "Jafoson/Barynt";
@@ -108,6 +108,8 @@ ${page}
   await writeFile("dist/index.html", html);
   await writeFile("dist/release.json", JSON.stringify({ version, title: data.title, notes: notes.map((n) => ({ version: n.version, date: n.date, url: n.url })) }, null, 2));
   await writeFile("dist/.nojekyll", "");
+  // Screenshots and recordings of the app (public/media/<lang>/), as they are.
+  await cp("public", "dist", { recursive: true });
   if (process.env.SITE_CNAME) await writeFile("dist/CNAME", `${process.env.SITE_CNAME}\n`);
   console.log(`Built the site for Barynt ${version} (${notes.length} release notes).`);
 }

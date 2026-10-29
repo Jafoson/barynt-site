@@ -50,6 +50,8 @@ rate limit.
 | `src/template.html`              | The page: start page, docs, widgets, German dictionary. `__VERSION__` and the release data block are filled in by the build |
 | `scripts/build.ts`               | Picks the release, reads its notes, fills the template, writes `dist/`                          |
 | `.github/workflows/deploy.yml`   | Build and deploy on dispatch, by hand or on push                                                |
+| `public/media/`                  | Screenshots and videos of the app, copied into `dist/` as they are                              |
+| `scripts/capture/`               | Records `public/media/` from a running Barynt                                                   |
 
 ### Translations
 
@@ -59,7 +61,10 @@ needs its German entry too, otherwise it stays English on the German page.
 Commands and code (`curl …`, `barynt …`) are never translated. Release notes
 aren't in the dictionary: they come in both languages from Barynt.
 
-### Screenshots
+### Screenshots and videos
 
-Every place for a screenshot or video is a placeholder that names what belongs
-there and its size (1920 × 1080 in the hero, 1600 × 800 in the carousel).
+Real recordings of Barynt, in English and German, under `public/media/<lang>/`
+(`.webp` screenshots, `.mp4` loops with a `.webp` poster). The page picks the
+folder for the language it shows. They're recorded with Playwright from a
+running Barynt with seed data, see `scripts/capture/README.md`; record again
+when the app's look changes.
