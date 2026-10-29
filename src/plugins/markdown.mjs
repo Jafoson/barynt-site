@@ -29,23 +29,6 @@ export function githubAlerts() {
     });
 }
 
-/** `![…](../assets/en/x.png)` shows `x.light.png` in light mode when that file
- *  exists; `x.png` is the dark one and the fallback. Each language has its own
- *  folder (`assets/en/`, `assets/de/`) and its pages link their own. */
-export function themedImages() {
-  return () => (tree, file) => {
-    const page = file.path || file.history?.[0] || "";
-    walk(tree, (node, i, parent) => {
-      if (node.type !== "image" || /^(https?:|\/)/.test(node.url)) return;
-      const light = node.url.replace(/(\.[a-z0-9]+)$/i, ".light$1");
-      if (!existsSync(resolve(dirname(page), light))) return;
-      node.data = { hProperties: { class: "light:sl-hidden" } };
-      parent.children.splice(i + 1, 0, { type: "image", url: light, alt: node.alt, data: { hProperties: { class: "dark:sl-hidden" } } });
-      return false;
-    });
-  };
-}
-
 /** `[Install](install.md#unattended)` → `/docs/getting-started/install/#unattended`
  *  (`/de/docs/…` from a German page), so the same link works on GitHub. */
 export function mdLinks(docs) {

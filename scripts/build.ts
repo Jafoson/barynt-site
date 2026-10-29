@@ -16,8 +16,8 @@
 //   local folder instead.
 
 import { existsSync } from "node:fs";
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { dirname } from "node:path";
+import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
 import { marked } from "marked";
 
 const REPO = process.env.BARYNT_REPO || "Jafoson/Barynt";
@@ -147,13 +147,18 @@ ${page}
   }
   if (process.env.SITE_CNAME) await writeFile("public/CNAME", `${process.env.SITE_CNAME}\n`);
 
-  let docs = process.env.BARYNT_DOCS_DIR ? `local ${process.env.BARYNT_DOCS_DIR}` : "";
-  if (!docs) {
+  let docs = "";
+  if (process.env.BARYNT_DOCS_DIR) {
+    await rm(".barynt/docs", { recursive: true, force: true });
+    await cp(process.env.BARYNT_DOCS_DIR, ".barynt/docs/guide", { recursive: true });
+    docs = `local ${process.env.BARYNT_DOCS_DIR}`;
+  } else {
     const fallback = process.env.DOCS_REF || "main";
     if (await fetchDocs(`v${version}`)) docs = `v${version}`;
     else if (await fetchDocs(fallback)) docs = fallback;
     else throw new Error(`Neither v${version} nor ${fallback} has docs/guide/ in ${REPO}.`);
   }
+  await fillMissingImages(".barynt/docs/guide");
   console.log(`Prepared Barynt ${version}: ${notes.length} release notes, ${images.length} images, docs from ${docs}.`);
 }
 
@@ -167,6 +172,26 @@ async function fetchDocs(ref: string): Promise<boolean> {
   const tar = Bun.spawnSync(["tar", "-xzf", ".barynt/source.tar.gz", "-C", ".barynt", "--strip-components=1", "--wildcards", "*/docs/guide/*"]);
   await rm(".barynt/source.tar.gz");
   return tar.exitCode === 0 && existsSync(".barynt/docs/guide/_groups.json");
+}
+
+/** A picture missing from one language's folder (assets/en, assets/de) is
+ *  copied over from the other one, so a forgotten translation never breaks a
+ *  page. */
+async function fillMissingImages(root: string) {
+  const pages = (await readdir(root, { recursive: true })).filter((f) => f.endsWith(".md"));
+  for (const page of pages) {
+    const text = await readFile(join(root, page), "utf8");
+    for (const [, url] of text.matchAll(/!\[[^\]]*\]\(([^)\s]+)\)/g)) {
+      if (/^(https?:|\/)/.test(url) || !/assets\/(en|de)\//.test(url)) continue;
+      const target = join(root, dirname(page), url);
+      if (existsSync(target)) continue;
+      const other = target.replace(/assets\/(en|de)\//, (_, l) => `assets/${l === "en" ? "de" : "en"}/`);
+      if (!existsSync(other)) continue;
+      await mkdir(dirname(target), { recursive: true });
+      await cp(other, target);
+      console.warn(`! ${page}: ${url} missing, using the other language's picture`);
+    }
+  }
 }
 
 const escapeHtml = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

@@ -5,7 +5,7 @@
 import { unified } from "@astrojs/markdown-remark";
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
-import { githubAlerts, mdLinks, themedImages, version } from "./src/plugins/markdown.mjs";
+import { githubAlerts, mdLinks, version } from "./src/plugins/markdown.mjs";
 import { sidebarFrom } from "./src/plugins/sidebar.mjs";
 import { DOCS_DIR, VERSION } from "./src/site.mjs";
 
@@ -14,7 +14,7 @@ export default defineConfig({
   // GitHub Pages leaves `_`-folders alone only with .nojekyll; a plain name is simpler.
   build: { assets: "astro" },
   redirects: { "/docs": "/docs/getting-started/intro/", "/de/docs": "/de/docs/getting-started/intro/" },
-  markdown: { processor: unified({ remarkPlugins: [githubAlerts, themedImages(), mdLinks(DOCS_DIR), version(VERSION)] }) },
+  markdown: { processor: unified({ remarkPlugins: [githubAlerts, mdLinks(DOCS_DIR), version(VERSION)] }) },
   integrations: [
     starlight({
       title: "Barynt Docs",
