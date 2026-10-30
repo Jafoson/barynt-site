@@ -9,8 +9,10 @@ import { githubAlerts, mdLinks, version } from "./src/plugins/markdown.mjs";
 import { sidebarFrom } from "./src/plugins/sidebar.mjs";
 import { DOCS_DIR, VERSION } from "./src/site.mjs";
 
+const SITE = process.env.SITE_CNAME ? `https://${process.env.SITE_CNAME}` : undefined;
+
 export default defineConfig({
-  site: process.env.SITE_CNAME ? `https://${process.env.SITE_CNAME}` : undefined,
+  site: SITE,
   // GitHub Pages leaves `_`-folders alone only with .nojekyll; a plain name is simpler.
   build: { assets: "astro" },
   redirects: { "/docs": "/docs/getting-started/intro/", "/de/docs": "/de/docs/getting-started/intro/" },
@@ -18,6 +20,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Barynt Docs",
+      favicon: "/favicon.svg",
       defaultLocale: "root",
       locales: { root: { label: "English", lang: "en" }, de: { label: "Deutsch", lang: "de" } },
       editLink: { baseUrl: "https://github.com/Jafoson/Barynt/edit/main/docs/guide/" },
@@ -29,6 +32,16 @@ export default defineConfig({
       },
       customCss: ["./src/styles/barynt.css"],
       head: [
+        { tag: "link", attrs: { rel: "icon", href: "/favicon-32.png", sizes: "32x32", type: "image/png" } },
+        { tag: "link", attrs: { rel: "apple-touch-icon", href: "/apple-touch-icon.png" } },
+        { tag: "meta", attrs: { name: "theme-color", content: "#0e1516" } },
+        ...(SITE
+          ? [
+              { tag: "meta", attrs: { property: "og:image", content: `${SITE}/og.png` } },
+              { tag: "meta", attrs: { name: "twitter:image", content: `${SITE}/og.png` } },
+              { tag: "meta", attrs: { name: "twitter:card", content: "summary_large_image" } },
+            ]
+          : []),
         { tag: "link", attrs: { rel: "preconnect", href: "https://fonts.googleapis.com" } },
         {
           tag: "link",

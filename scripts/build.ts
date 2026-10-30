@@ -124,6 +124,7 @@ async function main() {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="barynt-version" content="${version}">
+${headTags()}
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -261,6 +262,36 @@ async function prepareDevDocs(src: string, guide: string, ref: string): Promise<
   if (!withDev.development) withDev.development = { en: "Development", de: "Entwicklung" };
   await writeFile(groupsFile, JSON.stringify(withDev, null, 2));
   return count;
+}
+
+/** Icons, canonical address and link-preview tags of the start page. The
+ *  absolute ones (canonical, og:url, og:image) need the site's address, so
+ *  they only appear when SITE_CNAME is set. */
+function headTags(): string {
+  const site = process.env.SITE_CNAME ? `https://${process.env.SITE_CNAME}` : "";
+  const title = "Barynt: the issue tracker you host yourself";
+  const description = "Boards, views, dashboards, roles, SSO, a REST API and an MCP server for AI assistants. One Docker image, open source, MIT.";
+  return [
+    '<link rel="icon" href="/favicon.svg" type="image/svg+xml">',
+    '<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">',
+    '<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
+    '<meta name="theme-color" content="#0e1516">',
+    `<meta property="og:type" content="website">`,
+    `<meta property="og:site_name" content="Barynt">`,
+    `<meta property="og:title" content="${escapeHtml(title)}">`,
+    `<meta property="og:description" content="${escapeHtml(description)}">`,
+    ...(site
+      ? [
+          `<link rel="canonical" href="${site}/">`,
+          `<meta property="og:url" content="${site}/">`,
+          `<meta property="og:image" content="${site}/og.png">`,
+          `<meta property="og:image:width" content="1200">`,
+          `<meta property="og:image:height" content="630">`,
+          `<meta name="twitter:card" content="summary_large_image">`,
+          `<meta name="twitter:image" content="${site}/og.png">`,
+        ]
+      : []),
+  ].join("\n");
 }
 
 const escapeHtml = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

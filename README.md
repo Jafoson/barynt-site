@@ -91,3 +91,11 @@ Real recordings of Barynt, in English and German, under `public/media/<lang>/`
 folder for the language it shows. They're recorded with Playwright from a
 running Barynt with seed data, see `scripts/capture/README.md`; record again
 when the app's look changes.
+
+## Icons and link preview
+
+`public/favicon.svg`, `favicon-32.png`, `apple-touch-icon.png` and `og.png`
+(the 1200×630 picture shown when the link is shared) are made from Barynt's logo
+and a screenshot by `scripts/brand-assets.mjs`; run it when either changes and
+commit the result. The canonical address and the Open Graph tags appear when
+`SITE_CNAME` is set (`barynt.dev`).
