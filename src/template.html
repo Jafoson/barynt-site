@@ -1,4 +1,4 @@
-<title>Barynt</title>
+<title>Barynt: the issue tracker you host yourself</title>
 <meta name="description" content="Barynt is an open-source issue tracker you host yourself.">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -169,6 +169,27 @@ p { margin: 0; }
 .stars { display: inline-flex; align-items: center; gap: 0.375rem; height: 2.25rem; padding: 0 0.875rem; border-radius: var(--pill); border: 1px solid var(--outline-variant); text-decoration: none; font-size: 0.875rem; font-weight: 600; }
 .stars:hover { background: var(--surface-container); }
 .burger { display: none; }
+/* Docs search (Pagefind, the index Starlight builds for /docs/) */
+.searchbtn { display: inline-flex; align-items: center; gap: 0.5rem; height: 2.25rem; padding: 0 0.375rem 0 0.75rem; min-width: 13rem; border-radius: var(--pill); border: 1px solid var(--outline-variant); background: var(--surface-container-low); color: var(--on-surface-variant); font: 500 0.875rem var(--font-ui); cursor: pointer; }
+.searchbtn:hover { background: var(--surface-container); color: var(--on-surface); }
+.searchbtn kbd { margin-left: auto; padding: 0.125rem 0.4375rem; border-radius: var(--pill); background: var(--surface-container-high); font: 500 0.6875rem var(--font-mono); }
+@media (max-width: 1100px) { .searchbtn { min-width: 0; padding: 0; width: 2.25rem; justify-content: center; border: 0; background: transparent; } .searchbtn :is(.searchbtn-l, kbd) { display: none; } }
+.search-dlg { width: min(42rem, calc(100vw - 2rem)); max-height: min(36rem, calc(100dvh - 6rem)); margin: 4.5rem auto auto; padding: 1rem; border: 0; border-radius: var(--radius-widget); background: var(--surface-container-low); color: var(--on-surface); box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 0.35); overflow: auto; }
+.search-dlg::backdrop { background: rgb(0 0 0 / 0.45); backdrop-filter: blur(4px); }
+.search-dlg {
+  --pagefind-ui-scale: 0.85;
+  --pagefind-ui-primary: var(--primary);
+  --pagefind-ui-text: var(--on-surface);
+  --pagefind-ui-background: var(--surface-container-lowest);
+  --pagefind-ui-border: var(--outline-variant);
+  --pagefind-ui-tag: var(--surface-container-high);
+  --pagefind-ui-border-radius: 0.875rem;
+  --pagefind-ui-font: var(--font-ui);
+}
+.search-dlg .pagefind-ui__result-link { color: var(--primary); }
+.search-dlg mark { background: color-mix(in srgb, var(--primary) 25%, transparent); color: inherit; }
+.search-close { position: absolute; top: 0.875rem; right: 0.875rem; }
+@media (max-width: 760px) { .search-dlg { margin-top: calc(env(safe-area-inset-top, 0px) + 0.5rem); max-height: calc(100dvh - 1rem); } }
 
 @media (max-width: 760px) {
   .nav { display: none; }
@@ -234,7 +255,6 @@ kbd { display: inline-grid; place-items: center; min-width: 1.5rem; height: 1.5r
 /* Real screenshots and recordings of the app, per language (media/<lang>/). */
 .shot.media { display: block; width: 100%; height: auto; object-fit: cover; object-position: left top; background: var(--surface-container); }
 .slide .shot.media { aspect-ratio: 2 / 1; }
-.article .shot.media { aspect-ratio: auto; border-radius: 0.875rem; box-shadow: var(--widget-shadow); border: 1px solid color-mix(in srgb, var(--outline) 55%, transparent); }
 /* A clear edge around each carousel card, so the dark screenshots stand off the page. */
 .slide { border: 1px solid color-mix(in srgb, var(--outline) 55%, transparent); }
 .slide .shot.media { border-bottom: 1px solid color-mix(in srgb, var(--outline) 40%, transparent); }
@@ -991,71 +1011,6 @@ footer a:hover { color: var(--on-surface); }
 footer .about { display: grid; gap: 0.75rem; align-content: start; color: var(--on-surface-variant); }
 @media (max-width: 760px) { footer .wrap { grid-template-columns: 1fr 1fr; } footer .about { grid-column: 1 / -1; } }
 
-/* ═════════════════════ DOCS ═════════════════════ */
-.docs { display: grid; grid-template-columns: 15.5rem minmax(0, 1fr) 12.5rem; gap: 2.5rem; padding-block: 2rem 4rem; align-items: start; }
-.dside { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 4.75rem); display: grid; gap: 1.25rem; max-height: calc(100vh - 6rem); overflow-y: auto; padding-bottom: 1rem; }
-.search { display: flex; align-items: center; gap: 0.5rem; height: 2.5rem; padding: 0 0.5rem 0 0.75rem; border-radius: 0.75rem; background: var(--surface-container-high); color: var(--on-surface-variant); font-size: 0.875rem; }
-.search input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--on-surface); font: inherit; outline: none; }
-.dgroup h5 { margin: 0 0 0.375rem; padding-left: 0.75rem; font: 500 0.6875rem var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--on-surface-variant); }
-.dgroup ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
-.dgroup a { display: flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0.75rem; border-radius: 0.5rem; text-decoration: none; font-size: 0.9rem; color: var(--on-surface-variant); }
-.dgroup a:hover { background: var(--surface-container-high); color: var(--on-surface); }
-.dgroup a[aria-current="page"] { background: var(--primary-container); color: var(--on-primary-container); font-weight: 600; }
-.dgroup a .new { margin-left: auto; font-size: 0.625rem; font-weight: 700; padding: 0 0.375rem; border-radius: var(--pill); background: var(--tertiary-container); color: var(--on-tertiary-container); }
-.dmobile { display: none; }
-
-.article { min-width: 0; max-width: 46rem; }
-.crumbs { display: flex; flex-wrap: wrap; gap: 0.375rem; align-items: center; font-size: 0.8125rem; color: var(--on-surface-variant); margin-bottom: 1rem; }
-.crumbs a { text-decoration: none; } .crumbs a:hover { color: var(--on-surface); }
-.article h1 { font-size: clamp(2rem, 4.5vw, 2.75rem); letter-spacing: -0.035em; line-height: 1.08; font-weight: 800; margin-bottom: 0.75rem; }
-.article .lead { font-size: 1.1875rem; color: var(--on-surface-variant); line-height: 1.55; margin-bottom: 1.5rem; }
-.article h2 { font-size: 1.5rem; letter-spacing: -0.02em; margin: 2.5rem 0 0.75rem; scroll-margin-top: 5rem; }
-.article h3 { font-size: 1.125rem; margin: 1.75rem 0 0.5rem; scroll-margin-top: 5rem; }
-.article p, .article li { line-height: 1.7; }
-.article p + p { margin-top: 0.875rem; }
-.article ul, .article ol { padding-left: 1.25rem; display: grid; gap: 0.375rem; margin: 0.75rem 0; }
-.article :not(pre) > code { font-size: 0.85em; padding: 0.0625rem 0.375rem; border-radius: 0.3125rem; background: var(--surface-container-high); }
-.article .term { margin: 1rem 0; }
-.article table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
-.tablewrap { overflow-x: auto; margin: 1rem 0; border-radius: 0.875rem; background: var(--surface-container-low); }
-.article th, .article td { text-align: left; padding: 0.625rem 0.875rem; border-bottom: 1px solid var(--outline-variant); vertical-align: top; }
-.article tr:last-child td { border-bottom: 0; }
-.article th { font: 500 0.6875rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--on-surface-variant); }
-.article .shot { aspect-ratio: 16 / 9; margin: 1.25rem 0; }
-
-/* Callouts — the two panel types from Barynt's rich text */
-.callout { display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; padding: 0.875rem 1rem; margin: 1.25rem 0; border-radius: 0.875rem; border: 1px solid; font-size: 0.9375rem; line-height: 1.6; }
-.callout .ico { margin-top: 0.1875rem; }
-.callout.info { border-color: color-mix(in srgb, var(--info) 40%, transparent); background: color-mix(in srgb, var(--info) 9%, transparent); }
-.callout.info .ico { color: var(--info); }
-.callout.warn { border-color: color-mix(in srgb, var(--warning) 45%, transparent); background: color-mix(in srgb, var(--warning) 10%, transparent); }
-.callout.warn .ico { color: var(--warning); }
-
-.pager { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; margin-top: 3rem; }
-.pager a { display: grid; gap: 0.25rem; padding: 1rem 1.125rem; border-radius: 1rem; background: var(--surface-container-low); text-decoration: none; }
-.pager a:hover { background: var(--surface-container); }
-.pager small { color: var(--on-surface-variant); font-size: 0.75rem; }
-.pager b { font-size: 1rem; color: var(--primary); }
-.pager .next { text-align: right; grid-column: 2; }
-.edit { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; margin-top: 1.5rem; font-size: 0.8125rem; color: var(--on-surface-variant); }
-.edit a { color: var(--primary); text-decoration: none; font-weight: 600; }
-
-.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 4.75rem); display: grid; gap: 0.75rem; font-size: 0.8125rem; }
-.toc h5 { margin: 0; font: 500 0.6875rem var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--on-surface-variant); }
-.toc ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.25rem; border-left: 2px solid var(--outline-variant); }
-.toc a { display: block; padding: 0.25rem 0 0.25rem 0.75rem; margin-left: -2px; border-left: 2px solid transparent; color: var(--on-surface-variant); text-decoration: none; }
-.toc a:hover { color: var(--on-surface); }
-.toc a.on { border-color: var(--primary); color: var(--primary); font-weight: 600; }
-.toc .widget { height: auto; padding: 0.875rem; gap: 0.375rem; container-type: normal; }
-
-@media (max-width: 1100px) { .docs { grid-template-columns: 14rem minmax(0, 1fr); } .toc { display: none; } }
-@media (max-width: 760px) {
-  .docs { grid-template-columns: 1fr; gap: 1rem; padding-top: 1rem; }
-  .dside { display: none; }
-  .dmobile { display: block; }
-  .dmobile select { width: 100%; height: 2.75rem; padding: 0 0.75rem; border-radius: 0.75rem; border: 0; background: var(--surface-container-high); color: var(--on-surface); font: 600 0.9375rem var(--font-ui); }
-}
-
 .toast { position: fixed; left: 50%; bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 1rem); opacity: 0; padding: 0.625rem 1rem; border-radius: var(--pill); background: var(--on-surface); color: var(--surface); font-size: 0.875rem; font-weight: 600; transition: 0.2s; pointer-events: none; z-index: 40; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
@@ -1119,11 +1074,11 @@ footer .about { display: grid; gap: 0.75rem; align-content: start; color: var(--
     <a class="brand" href="#start"><svg><use href="#logo"/></svg>Barynt <span class="tag" id="brandTag">v__VERSION__</span></a>
     <nav class="nav" id="nav">
       <a href="#start" data-route="start">Product</a>
-      <a href="#docs" data-route="docs">Docs</a>
-      <a href="#docs-mcp" data-route="docs">MCP &amp; API</a>
+      <a href="/docs/getting-started/intro/">Docs</a>
       <a href="#releases" data-route="releases">Changelog</a>
     </nav>
     <div class="spacer"></div>
+    <button class="searchbtn" id="searchBtn" type="button" aria-label="Search the docs"><svg class="ico"><use href="#i-search"/></svg><span class="searchbtn-l">Search docs</span><kbd class="no-tr" id="searchKey">Ctrl K</kbd></button>
     <button class="langbtn" id="langBtn" type="button" aria-label="Sprache wechseln / Switch language"><span data-l="en">EN</span><span data-l="de">DE</span></button>
     <button class="iconbtn" id="theme" type="button" aria-label="Toggle light and dark"><svg><use href="#i-sun"/></svg></button>
     <a class="stars" href="https://github.com/Jafoson/Barynt" target="_blank" rel="noopener"><svg class="ico"><use href="#i-star"/></svg><span class="stars-label">Star on GitHub</span></a>
@@ -1140,7 +1095,7 @@ footer .about { display: grid; gap: 0.75rem; align-content: start; color: var(--
       <p class="lede">Barynt is an issue tracker in the spirit of Linear and Jira that runs on your own infrastructure. Boards, lists and dashboards, roles down to the project, SSO without an enterprise tier, and an MCP server your AI assistant can talk to.</p>
       <div class="hero-actions">
         <div class="cmd"><span class="p">$</span><span class="t" id="heroCmd">curl -fsSL https://github.com/Jafoson/Barynt/releases/latest/download/install.sh | sh</span><button type="button" data-copy="heroCmd">Copy</button></div>
-        <a class="btn quiet" href="#docs-install">Install guide <svg><use href="#i-arrow"/></svg></a>
+        <a class="btn quiet" href="/docs/getting-started/install/">Install guide <svg><use href="#i-arrow"/></svg></a>
       </div>
     </div>
 
@@ -1455,7 +1410,7 @@ claude mcp add --transport http \
         </div>
         <pre class="tt-out" id="hostOut"></pre>
         <span id="hostCopy" hidden></span>
-        <div class="tt-foot"><a href="#docs-install">Installer guide →</a><a href="#docs-compose">Prefer Docker Compose by hand?</a></div>
+        <div class="tt-foot"><a href="/docs/getting-started/install/">Installer guide →</a><a href="/docs/getting-started/compose/">Prefer Docker Compose by hand?</a></div>
       </div>
     </div>
   </section>
@@ -1467,15 +1422,15 @@ claude mcp add --transport http \
       <h2>Read the docs.</h2>
     </div>
     <div class="doc-cards">
-      <a class="doc-card" href="#docs-install"><svg class="ico"><use href="#i-server"/></svg><b>Install in one line</b><span>The whole stack on one server, HTTPS included.</span><span class="go">Open guide →</span></a>
-      <a class="doc-card" href="#docs-mcp"><svg class="ico"><use href="#i-bot"/></svg><b>Connect your AI</b><span>Point Claude or any MCP client at your instance.</span><span class="go">Open guide →</span></a>
-      <a class="doc-card" href="#docs-sso"><svg class="ico"><use href="#i-key"/></svg><b>Sign-in &amp; SSO</b><span>Passkeys, OAuth and any OIDC provider from the environment.</span><span class="go">Open guide →</span></a>
-      <a class="doc-card" href="#docs-roles"><svg class="ico"><use href="#i-shield"/></svg><b>Roles &amp; permissions</b><span>Platform, workspace and project scopes explained.</span><span class="go">Open guide →</span></a>
+      <a class="doc-card" href="/docs/getting-started/install/"><svg class="ico"><use href="#i-server"/></svg><b>Install in one line</b><span>The whole stack on one server, HTTPS included.</span><span class="go">Open guide →</span></a>
+      <a class="doc-card" href="/docs/integrations/mcp/"><svg class="ico"><use href="#i-bot"/></svg><b>Connect your AI</b><span>Point Claude or any MCP client at your instance.</span><span class="go">Open guide →</span></a>
+      <a class="doc-card" href="/docs/administration/sso/"><svg class="ico"><use href="#i-key"/></svg><b>Sign-in &amp; SSO</b><span>Passkeys, OAuth and any OIDC provider from the environment.</span><span class="go">Open guide →</span></a>
+      <a class="doc-card" href="/docs/administration/roles/"><svg class="ico"><use href="#i-shield"/></svg><b>Roles &amp; permissions</b><span>Platform, workspace and project scopes explained.</span><span class="go">Open guide →</span></a>
     </div>
 
     <div class="cta">
       <div><h2>Your tracker, your data, your rules.</h2><p>Free and open source under MIT. Star it, fork it, run it.</p></div>
-      <div class="acts"><a class="btn primary" href="#docs">Get started</a><a class="btn quiet" href="https://github.com/Jafoson/Barynt" target="_blank" rel="noopener">GitHub</a></div>
+      <div class="acts"><a class="btn primary" href="/docs/getting-started/intro/">Get started</a><a class="btn quiet" href="https://github.com/Jafoson/Barynt" target="_blank" rel="noopener">GitHub</a></div>
     </div>
   </section>
 </main>
@@ -1492,18 +1447,6 @@ claude mcp add --transport http \
   </div>
 </main>
 
-<!-- ═══════════════ DOCS ═══════════════ -->
-<main id="view-docs" hidden>
-  <div class="wrap docs">
-    <aside class="dside" id="dside">
-      <label class="search"><svg class="ico"><use href="#i-search"/></svg><input id="docSearch" type="search" placeholder="Search docs"><kbd>/</kbd></label>
-    </aside>
-    <div class="dmobile"><select id="docSelect" aria-label="Docs page"></select></div>
-    <article class="article" id="article"></article>
-    <aside class="toc" id="toc"></aside>
-  </div>
-</main>
-
 <footer>
   <div class="wrap">
     <div class="about">
@@ -1511,12 +1454,13 @@ claude mcp add --transport http \
       <span>The open-source issue tracker you host yourself.</span>
       <span style="font-size:.75rem">MIT License · v__VERSION__</span>
     </div>
-    <div><h4>Product</h4><ul><li><a href="#start">Overview</a></li><li><a href="#docs-dashboards">Dashboards</a></li><li><a href="#docs-shortcuts">Shortcuts</a></li><li><a href="#releases">Changelog</a></li></ul></div>
-    <div><h4>Docs</h4><ul><li><a href="#docs-install">Installer</a></li><li><a href="#docs-compose">Docker Compose</a></li><li><a href="#docs-helm">Kubernetes</a></li><li><a href="#docs-mcp">MCP server</a></li><li><a href="#docs-api">REST API</a></li></ul></div>
+    <div><h4>Product</h4><ul><li><a href="#start">Overview</a></li><li><a href="/docs/using-barynt/dashboards/">Dashboards</a></li><li><a href="/docs/using-barynt/shortcuts/">Shortcuts</a></li><li><a href="#releases">Changelog</a></li></ul></div>
+    <div><h4>Docs</h4><ul><li><a href="/docs/getting-started/install/">Installer</a></li><li><a href="/docs/getting-started/compose/">Docker Compose</a></li><li><a href="/docs/getting-started/helm/">Kubernetes</a></li><li><a href="/docs/integrations/mcp/">MCP server</a></li><li><a href="/docs/integrations/api/">REST API</a></li></ul></div>
     <div><h4>Project</h4><ul><li><a href="https://github.com/Jafoson/Barynt" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/Jafoson/Barynt/issues" target="_blank" rel="noopener">Issues</a></li><li><a href="https://github.com/Jafoson/Barynt/blob/main/LICENSE" target="_blank" rel="noopener">License</a></li></ul></div>
   </div>
 </footer>
 
+<dialog class="search-dlg" id="searchDlg" aria-label="Search the docs"><div id="searchUi"></div></dialog>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -1546,214 +1490,6 @@ claude mcp add --transport http \
   const RELEASE = /*__RELEASE_DATA__*/{"version":"1.0.12","title":{"en":"1.0.12","de":"1.0.12"},"dict":{},"notes":[]}/*__END__*/;
   function T(s) { try { return LANG === "de" && DE[s] != null ? DE[s] : s; } catch { return s; } }
 
-  /* ── Docs content ── */
-  const NAV = [
-    ["Getting started", [["intro", "Introduction"], ["install", "Install", true], ["manage", "The barynt command", true], ["compose", "Docker Compose (manual)"], ["helm", "Kubernetes (Helm)"], ["config", "Configuration"]]],
-    ["Using Barynt", [["issues", "Issues & projects"], ["views", "Views"], ["dashboards", "Dashboards", true], ["shortcuts", "Keyboard shortcuts"]]],
-    ["Administration", [["roles", "Roles & permissions"], ["sso", "Sign-in & SSO"], ["email", "Email"], ["storage", "Object storage"]]],
-    ["Integrations", [["mcp", "MCP server"], ["api", "REST API"], ["webhooks", "Webhooks"]]],
-    ["Project", [["contributing", "Contributing"]]],
-  ];
-  const FLAT = NAV.flatMap(([g, items]) => items.map(([slug, title]) => ({ slug, title, group: g })));
-
-  const INSTALL_URL = "https://github.com/Jafoson/Barynt/releases/latest/download/install.sh";
-  const code = (id, lang, body) => `<div class="term"><div class="term-bar">${lang}<span class="spacer"></span><button class="copy" type="button" data-copy="${id}">Copy</button></div><pre id="${id}">${body}</pre></div>`;
-  const shot = (t, n, media) => media
-    ? `<img class="shot media" data-media="${media}" alt="${t}" loading="lazy" width="1600" height="900">`
-    : `<div class="shot"><div class="lbl"><b>Screenshot: ${t}</b><code>${n}</code></div></div>`;
-
-  const PAGES = {
-    intro: {
-      lead: "Barynt is an issue tracker you run yourself. Workspaces contain projects, projects contain issues, and statuses, priorities, issue types, labels and roles are configurable per workspace.",
-      body: `
-        ${shot("Workspace overview", "", "overview")}
-        <h2 id="what">What you get</h2>
-        <ul><li>Issues with rich text, sub-issues, relations and attachments</li><li>Board, list and dashboard views, saved and shared</li><li>Role-based access across platform, workspace and project</li><li>An in-app inbox with optional email per event</li><li>A REST API, webhooks and a remote MCP server</li></ul>
-        <h2 id="stack">How it runs</h2>
-        <p>One Next.js app and PostgreSQL. Redis (rate limiting) and S3-compatible storage (avatars, attachments) are optional. The bundled compose file brings RustFS and Caddy along.</p>
-        <div class="callout info"><svg class="ico"><use href="#i-info"/></svg><div>New here? <a href="#docs-install">The installer</a> gets you a working instance on one server with a single command.</div></div>
-        <h2 id="next">Next steps</h2>
-        <div class="doc-cards">
-          <a class="doc-card" href="#docs-install"><b>Install</b><span>One line on a Linux server</span></a>
-          <a class="doc-card" href="#docs-mcp"><b>Connect AI</b><span>MCP for Claude &amp; co.</span></a>
-        </div>`,
-    },
-    compose: {
-      lead: "Barynt ships as one docker-compose.yml for local development and production, split by Compose profiles. The images are prebuilt and multi-arch on ghcr.io/jafoson/barynt.",
-      body: `
-        <h2 id="requirements">Requirements</h2>
-        <ul><li>A Linux host with Docker and the Compose plugin</li><li>Ports 80 and 443 reachable, if you want automatic HTTPS</li><li>A domain whose DNS points at the host</li></ul>
-        <h2 id="files">Download the files</h2>
-        <p>A deployment needs exactly three files. You don't have to clone the repository.</p>
-        ${code("c1", "bash", `curl -O https://raw.githubusercontent.com/Jafoson/Barynt/main/docker-compose.yml
-curl -O https://raw.githubusercontent.com/Jafoson/Barynt/main/Caddyfile
-curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)}
-        <h2 id="configure">Configure .env</h2>
-        <p>Generate a secret and paste it into <code>AUTH_SECRET</code>. For a real deployment also set these:</p>
-        <div class="tablewrap"><table><thead><tr><th>Variable</th><th>Purpose</th></tr></thead><tbody>
-          <tr><td><code>AUTH_SECRET</code></td><td>Signs sessions. <code>bunx auth secret</code> creates one.</td></tr>
-          <tr><td><code>POSTGRES_PASSWORD</code></td><td>Password for the bundled database.</td></tr>
-          <tr><td><code>DOMAIN</code></td><td>Caddy requests a Let's Encrypt certificate for it.</td></tr>
-          <tr><td><code>SMTP_HOST</code></td><td>Optional. Without it Barynt sends no mail; invite links can still be copied.</td></tr>
-        </tbody></table></div>
-        <h2 id="start">Start the stack</h2>
-        ${code("c2", "bash", `<span class="c-k">docker compose</span> --profile app up -d`)}
-        <p>This starts the app, bundled RustFS object storage and Caddy as a reverse proxy. Before the server starts, the app applies pending migrations and bootstraps the system data every workspace needs.</p>
-        <div class="callout warn"><svg class="ico"><use href="#i-warn"/></svg><div>Every service except Caddy binds to <code>127.0.0.1</code>. Only expose ports 80 and 443 publicly.</div></div>
-        ${shot("first sign-in with a passkey", "login screen · 1280 × 800")}
-        <h2 id="update">Updating</h2>
-        <p>Change the image tag, or run <code>docker compose pull</code>, and restart. Migrations run on their own. Set <code>MIGRATE_ON_START=false</code> if your database is migrated elsewhere.</p>`,
-    },
-    install: {
-      lead: "One command installs Barynt on a Linux server: it checks Docker, asks for your domain, generates every secret and starts the stack with HTTPS.",
-      body: `
-        <h2 id="requirements">Requirements</h2>
-        <ul><li>Linux on amd64 or arm64 (macOS works for trying it out)</li><li>Docker with the Compose plugin. The installer offers to install it if it's missing.</li><li>For HTTPS: a domain, plus a second one for uploaded files (<code>files.</code> by default), both pointing at the server, and ports 80 and 443 open</li></ul>
-        <h2 id="install">Install</h2>
-        ${code("i1", "bash", `<span class="c-k">curl</span> -fsSL ${INSTALL_URL} | sh`)}
-        <p>The installer asks for your domain and the one for uploaded files. Leave the domain empty to run Barynt locally on <code>http://localhost:3000</code>.</p>
-        ${shot("installer in the terminal", "the questions and the “Barynt is running.” summary · 1280 × 720")}
-        <div class="callout info"><svg class="ico"><use href="#i-info"/></svg><div>Prefer to read it first? <code>curl -fsSLO …/install.sh &amp;&amp; less install.sh &amp;&amp; sh install.sh</code>. If the download breaks off halfway, nothing runs: the script only acts in its last line.</div></div>
-        <h2 id="unattended">Without questions</h2>
-        <p>For cloud-init or a provisioning script, pass the answers as options:</p>
-        ${code("i2", "bash", `<span class="c-k">curl</span> -fsSL ${INSTALL_URL} \\
-  | sh -s -- --domain issues.example.com --yes`)}
-        <div class="tablewrap"><table><thead><tr><th>Option</th><th>What it does</th></tr></thead><tbody>
-          <tr><td><code>--domain NAME</code></td><td>Domain for HTTPS, e.g. issues.example.com</td></tr>
-          <tr><td><code>--files-domain NAME</code></td><td>Domain for uploaded files, <code>files.&lt;domain&gt;</code> by default</td></tr>
-          <tr><td><code>--version X.Y.Z</code></td><td>Install this release instead of the newest</td></tr>
-          <tr><td><code>--dir DIR</code></td><td>Installation directory, <code>/opt/barynt</code> by default</td></tr>
-          <tr><td><code>--install-docker</code></td><td>Install Docker if it's missing, without asking</td></tr>
-          <tr><td><code>--yes</code></td><td>Don't ask, take the defaults</td></tr>
-          <tr><td><code>--dry-run</code></td><td>Show what would happen, change nothing</td></tr>
-        </tbody></table></div>
-        <h2 id="what">What it sets up</h2>
-        <p>In <code>/opt/barynt</code>: <code>docker-compose.yml</code>, <code>Caddyfile</code>, an <code>example.env</code> for reference and your <code>.env</code> (readable only by you) with a generated <code>AUTH_SECRET</code>, database password and storage key. The installer also puts itself on your path as <code>barynt</code>.</p>
-        <div class="callout warn"><svg class="ico"><use href="#i-warn"/></svg><div>The database password in <code>.env</code> can't be changed after the first start: the database was created with it. Keep the file safe, <code>barynt backup</code> includes it.</div></div>
-        <h2 id="first">First sign-in</h2>
-        <p>Open your domain and create the first account. It becomes the administrator. Then <a href="#docs-manage">the barynt command</a> takes care of everything else.</p>`,
-    },
-    manage: {
-      lead: "The installer puts itself on your server as barynt. It runs your upgrades, backups and checks.",
-      body: `
-        <h2 id="commands">Commands</h2>
-        <div class="tablewrap"><table><thead><tr><th>Command</th><th>What it does</th></tr></thead><tbody>
-          <tr><td><code>barynt status</code></td><td>Containers, version and health</td></tr>
-          <tr><td><code>barynt upgrade</code></td><td>The newest version (or <code>--version</code>), with a backup first</td></tr>
-          <tr><td><code>barynt backup</code></td><td>Database, uploaded files and <code>.env</code> in one archive</td></tr>
-          <tr><td><code>barynt restore &lt;archive&gt;</code></td><td>Replace the data with a backup</td></tr>
-          <tr><td><code>barynt logs [service]</code></td><td>Follow the logs of app, postgres, caddy …</td></tr>
-          <tr><td><code>barynt config [K=V …]</code></td><td>Change the domain or SMTP; interactive without arguments</td></tr>
-          <tr><td><code>barynt doctor</code></td><td>Checks Docker, memory, disk, DNS and health</td></tr>
-          <tr><td><code>barynt start | stop | restart</code></td><td>What it says</td></tr>
-          <tr><td><code>barynt uninstall</code></td><td>Removes the containers; <code>--purge</code> also deletes all data</td></tr>
-        </tbody></table></div>
-        <h2 id="upgrade">Upgrading</h2>
-        ${code("u1", "bash", `<span class="c-k">barynt</span> upgrade                   <span class="c-c"># backup, then the newest release</span>
-<span class="c-k">barynt</span> upgrade --version __VERSION__  <span class="c-c"># a specific one</span>`)}
-        <p>The app applies database migrations itself when it starts. Use <code>--no-backup</code> to skip the backup and <code>--force</code> to reinstall the same version or go back to an older one.</p>
-        <h2 id="backup">Backups</h2>
-        ${code("u2", "bash", `<span class="c-k">barynt</span> backup --output /mnt/backups
-<span class="c-k">barynt</span> restore /mnt/backups/barynt-__VERSION__-20261028-0300.tar.gz`)}
-        ${shot("barynt status and barynt doctor", "terminal output · 1280 × 720")}`,
-    },
-    helm: {
-      lead: "The same image on Kubernetes. The chart is published as a public OCI artifact on GHCR, so you don't need to add a repository.",
-      body: `
-        <h2 id="quick">Quick start</h2>
-        ${code("h1", "bash", `<span class="c-k">helm</span> install barynt oci://ghcr.io/jafoson/charts/barynt --version __VERSION__ \\
-  -n barynt --create-namespace
-<span class="c-k">kubectl</span> port-forward -n barynt svc/barynt 3000:80`)}
-        <p>By default the chart bundles Postgres, Redis and RustFS for S3, so it runs without any outside credentials. <code>AUTH_SECRET</code> is generated on the first install. Helm 3.8 or newer is needed for <code>oci://</code>.</p>
-        <h2 id="production">For production</h2>
-        <ul><li>External database, Redis and S3 instead of the bundled ones</li><li>Ingress with TLS through cert-manager, plus a second ingress for uploaded files</li><li>Pod disruption budget, scheduling rules and network policies</li><li>Scheduled backups of the bundled Postgres</li></ul>
-        <p>Start from <code>examples/values-production.yaml</code> in the chart.</p>
-        <h2 id="migrations">Migrations</h2>
-        <p>The app migrates the database when it starts, so an update is just another image tag. A startup probe holds back traffic while migrations run.</p>`,
-    },
-    mcp: {
-      lead: "Barynt includes a remote Model Context Protocol server at /api/mcp. It exposes workspaces, projects, issues, comments, labels, views and attachments as tools.",
-      body: `
-        <h2 id="auth">Authentication</h2>
-        <p>Use a personal API key (the same keys as the REST API) or OAuth 2.1. Connector-based clients such as Claude.ai and Claude Desktop discover the OAuth flow from the server URL alone, including dynamic client registration, so there is no key to paste.</p>
-        <h2 id="claude-code">Claude Code</h2>
-        ${code("m1", "bash", `claude mcp add --transport http barynt https://barynt.example.com/api/mcp`)}
-        <h2 id="desktop">Claude Desktop &amp; Claude.ai</h2>
-        <p>Add a custom connector with the URL <code>https://barynt.example.com/api/mcp</code> and sign in when asked.</p>
-        ${shot("connector sign-in consent screen", "OAuth consent · 1200 × 800")}
-        <h2 id="tools">Available tools</h2>
-        <div class="tablewrap"><table><thead><tr><th>Area</th><th>Tools</th></tr></thead><tbody>
-          <tr><td>Issues</td><td><code>list_issues</code>, <code>get_issue</code>, <code>create_issue</code>, <code>update_issue</code></td></tr>
-          <tr><td>Comments</td><td><code>list_comments</code>, <code>create_comment</code>, <code>update_comment</code></td></tr>
-          <tr><td>Attachments</td><td><code>list_attachments</code>, <code>add_attachment</code>, <code>delete_attachment</code></td></tr>
-          <tr><td>Structure</td><td><code>list_projects</code>, <code>list_statuses</code>, <code>list_labels</code>, <code>list_views</code></td></tr>
-        </tbody></table></div>
-        <div class="callout info"><svg class="ico"><use href="#i-info"/></svg><div>An agent has the same rights as the person whose key or login it uses. Every change shows up in the issue's activity.</div></div>`,
-    },
-    get releases() {
-      return {
-        lead: "Every release, written by hand and generated from Conventional Commits. The same notes appear in the app under the version line.",
-        body: RELEASE.notes.map((n) => `<h2 id="v${n.version.replace(/\./g, "")}">${n.version}</h2>
-          <p class="rn-meta no-tr">${new Date(n.date).toLocaleDateString(LANG === "de" ? "de-DE" : "en-GB", { day: "numeric", month: "long", year: "numeric" })} · <a href="${n.url}" target="_blank" rel="noopener">GitHub</a></p>
-          <div class="rn no-tr">${(LANG === "de" && n.de) || n.en}</div>`).join(""),
-      };
-    },
-  };
-
-  /* Sidebar */
-  const side = $("#dside"), sel = $("#docSelect");
-  NAV.forEach(([g, items]) => {
-    const d = document.createElement("div"); d.className = "dgroup";
-    d.innerHTML = `<h5>${g}</h5><ul>${items.map(([s, t, n]) => `<li><a href="#docs-${s}" data-slug="${s}">${t}${n ? '<span class="new">New</span>' : ""}</a></li>`).join("")}</ul>`;
-    side.appendChild(d);
-    const og = document.createElement("optgroup"); og.label = g;
-    items.forEach(([s, t]) => { const o = new Option(t, s); og.appendChild(o); });
-    sel.appendChild(og);
-  });
-  sel.addEventListener("change", () => { location.hash = "docs-" + sel.value; });
-
-  $("#docSearch").addEventListener("input", (e) => {
-    const q = e.target.value.trim().toLowerCase();
-    side.querySelectorAll(".dgroup li").forEach((li) => { li.hidden = q && !li.textContent.toLowerCase().includes(q); });
-  });
-
-  function renderDoc(slug) {
-    const i = Math.max(0, FLAT.findIndex((p) => p.slug === slug));
-    const page = FLAT[i];
-    const data = PAGES[page.slug] || {
-      lead: `Placeholder page for “${page.title}”. The structure is final, the text follows.`,
-      body: `${shot(page.title.toLowerCase(), "placeholder")}<h2 id="overview">Overview</h2><p>Content for this page will be written from the repository's docs and CLAUDE.md.</p><h2 id="details">Details</h2><p>Placeholder.</p>`,
-    };
-    const prev = FLAT[i - 1], next = FLAT[i + 1];
-    $("#article").innerHTML = `
-      <nav class="crumbs"><a href="#docs">Docs</a><span>/</span><span>${page.group}</span></nav>
-      <h1>${page.title}</h1><p class="lead">${data.lead}</p>${data.body}
-      <div class="pager">${prev ? `<a href="#docs-${prev.slug}"><small>Previous</small><b>← ${prev.title}</b></a>` : ""}${next ? `<a class="next" href="#docs-${next.slug}"><small>Next</small><b>${next.title} →</b></a>` : ""}</div>
-      <div class="edit"><span>${T("Last updated with")} v${RELEASE.version}</span><a href="https://github.com/Jafoson/Barynt" target="_blank" rel="noopener">Edit this page on GitHub</a></div>`;
-    applyMedia($("#article"));
-    side.querySelectorAll("a").forEach((a) => { if (a.dataset.slug === page.slug) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
-    sel.value = page.slug;
-
-    const hs = [...$("#article").querySelectorAll("h2[id]")];
-    $("#toc").innerHTML = `<h5>On this page</h5><ul>${hs.map((h) => `<li><a data-to="${h.id}">${h.textContent}</a></li>`).join("")}</ul>
-      <article class="widget" data-accent="teal" data-bg="tint"><div class="w-head"><svg class="ico"><use href="#i-book"/></svg>Back to product</div><a class="sub" href="#start" style="color:var(--on-surface)">See what Barynt does →</a></article>`;
-    spy(hs);
-  }
-
-  let obs;
-  function spy(hs) {
-    obs && obs.disconnect();
-    const links = [...document.querySelectorAll("#toc a[data-to]")];
-    if (links[0]) links[0].classList.add("on");
-    obs = new IntersectionObserver((es) => es.forEach((e) => {
-      if (e.isIntersecting) links.forEach((l) => l.classList.toggle("on", l.dataset.to === e.target.id));
-    }), { rootMargin: "-80px 0px -65% 0px" });
-    hs.forEach((h) => obs.observe(h));
-  }
-  document.addEventListener("click", (e) => {
-    const a = e.target.closest("[data-to]");
-    if (a) { e.preventDefault(); document.getElementById(a.dataset.to)?.scrollIntoView({ block: "start" }); }
-  });
 
   /* ── Release notes page: one version at a time, the installer for it below ── */
   const REL_DE = {
@@ -1784,7 +1520,7 @@ curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)
           <div class="rel-links">${n.installer.sums ? `<a href="${n.installer.sums}" target="_blank" rel="noopener">Checksums</a>` : ""}${n.installer.signature ? `<a href="${n.installer.signature}" target="_blank" rel="noopener">Signature</a>` : ""}<a href="${n.url}" target="_blank" rel="noopener">All files</a></div></section>`
       : `<section class="rel-install none"><h3>No one-line installer for this release</h3><p>The installer arrived with a later release. This version runs with Docker Compose and its image:</p>
           <div class="tt-out">${relCmd("The Docker image of this version", `docker pull ghcr.io/jafoson/barynt:${v}`)}</div>
-          <div class="rel-links"><a href="#docs-compose">Docker Compose guide</a><a href="${n.url}" target="_blank" rel="noopener">GitHub</a></div></section>`;
+          <div class="rel-links"><a href="/docs/getting-started/compose/">Docker Compose guide</a><a href="${n.url}" target="_blank" rel="noopener">GitHub</a></div></section>`;
     const newer = notes[i - 1], older = notes[i + 1];
     $("#relBody").innerHTML = `<div class="rel-title"><h2 class="no-tr">Barynt ${v}</h2><span class="rn-meta no-tr">${relDate(n.date)} · <a href="${n.url}" target="_blank" rel="noopener">GitHub</a></span></div>
       <div class="rn no-tr">${(LANG === "de" && n.de) || n.en}</div>${inst}
@@ -1797,22 +1533,27 @@ curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)
     try { navigator.clipboard.writeText(b.dataset.cmd).then(() => done("Copied"), () => done("Copy")); } catch { done("Copy"); }
   });
 
-  /* ── Router: #start, #docs, #docs-<slug>, #releases, plus in-page sections ── */
+  /* ── Router: #start, #releases, #release-<v>, plus in-page sections. The
+     docs are their own pages under /docs/ (Starlight); links from before
+     that (#docs-<slug>) are sent there. ── */
   const SECTIONS = ["features", "views", "host", "learn"];
+  const DOC_GROUP = {intro: "getting-started", install: "getting-started", manage: "getting-started", compose: "getting-started", helm: "getting-started", config: "getting-started", issues: "using-barynt", views: "using-barynt", dashboards: "using-barynt", shortcuts: "using-barynt", roles: "administration", sso: "administration", email: "administration", storage: "administration", mcp: "integrations", api: "integrations", webhooks: "integrations", contributing: "project"};
   function route() {
     const h = location.hash.slice(1);
-    const isDocs = h === "docs" || h.startsWith("docs-");
+    if (h === "docs" || h.startsWith("docs-")) {
+      const slug = DOC_GROUP[h.slice(5)] ? h.slice(5) : "intro";
+      location.replace(`${LANG === "de" ? "/de" : ""}/docs/${DOC_GROUP[slug]}/${slug}/`);
+      return;
+    }
     const isRel = h === "releases" || h.startsWith("release-");
-    $("#view-start").hidden = isDocs || isRel;
-    $("#view-docs").hidden = !isDocs;
+    $("#view-start").hidden = isRel;
     $("#view-releases").hidden = !isRel;
     document.querySelectorAll("#nav a").forEach((a) => {
-      const on = isRel ? a.dataset.route === "releases" : isDocs ? a.getAttribute("href") === "#" + h || (a.dataset.route === "docs" && h === "docs" && a.getAttribute("href") === "#docs") : a.dataset.route === "start";
+      const on = isRel ? a.dataset.route === "releases" : a.dataset.route === "start";
       if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
     });
     $("#nav").classList.remove("open");
-    if (isDocs) { renderDoc(h === "docs" ? "intro" : h.slice(5)); window.scrollTo(0, 0); }
-    else if (isRel) { renderRelease(h); window.scrollTo(0, 0); }
+    if (isRel) { renderRelease(h); window.scrollTo(0, 0); }
     else if (SECTIONS.includes(h)) document.getElementById(h).scrollIntoView();
     else window.scrollTo(0, 0);
   }
@@ -2384,10 +2125,11 @@ curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)
   rbacShow();
   $("#rbacRole").addEventListener("click", () => { rbacI = (rbacI + 1) % RBAC.length; rbacShow(); });
 
-  /* ── Keyboard: / focuses docs search, b/l/d switch views ── */
+  /* ── Keyboard: ⌘K / Ctrl K or / searches the docs, b/l/d switch views ── */
   document.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); openSearch(); return; }
     if (e.target.closest("input, select, textarea") || e.metaKey || e.ctrlKey) return;
-    if (e.key === "/" && !$("#view-docs").hidden) { e.preventDefault(); $("#docSearch").focus(); }
+    if (e.key === "/") { e.preventDefault(); openSearch(); return; }
     const map = { b: "board", l: "list", d: "dashboard" };
     if (map[e.key] && !$("#view-start").hidden && Date.now() - gAt > 1200) carGo({ board: 0, list: 1, dashboard: 2 }[map[e.key]]);
   });
@@ -2401,12 +2143,44 @@ curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)
     try { navigator.clipboard.writeText(text).then(() => toast("Copied"), fallback); } catch { fallback(); }
   });
 
-  /* ── Theme toggle + mobile menu ── */
+  /* ── Theme toggle + mobile menu. The choice is shared with the docs, under
+     the key Starlight reads. ── */
+  try { const t = localStorage.getItem("starlight-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch {}
   $("#theme").addEventListener("click", () => {
     const r = document.documentElement;
     const dark = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
     r.dataset.theme = dark ? "light" : "dark";
+    try { localStorage.setItem("starlight-theme", r.dataset.theme); } catch {}
     applyMedia();
+  });
+
+  /* ── Docs search: Pagefind's UI over the docs index, in the page's
+     language; loaded on first use. German docs live under /de/docs/. ── */
+  let searchUi = null, searchLang = "";
+  function openSearch() {
+    const dlg = $("#searchDlg");
+    const mount = () => {
+      if (searchLang === LANG) return;
+      searchUi?.destroy?.();
+      searchUi = new window.PagefindUI({ element: "#searchUi", showSubResults: true, showImages: false, translations: LANG === "de" ? { placeholder: "Doku durchsuchen", zero_results: "Keine Treffer für [SEARCH_TERM]" } : { placeholder: "Search the docs" } });
+      searchLang = LANG;
+    };
+    if (!window.PagefindUI) {
+      const css = document.createElement("link"); css.rel = "stylesheet"; css.href = "/pagefind/pagefind-ui.css"; document.head.appendChild(css);
+      const js = document.createElement("script"); js.src = "/pagefind/pagefind-ui.js";
+      js.onload = () => { mount(); dlg.querySelector("input")?.focus(); };
+      document.head.appendChild(js);
+    } else mount();
+    dlg.showModal();
+    setTimeout(() => dlg.querySelector("input")?.focus(), 50);
+  }
+  $("#searchBtn").addEventListener("click", openSearch);
+  $("#searchDlg").addEventListener("click", (e) => { if (e.target === e.currentTarget) e.currentTarget.close(); });
+  $("#searchKey").textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl K";
+  // Docs links follow the page's language.
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest('a[href^="/docs/"]');
+    if (a && LANG === "de") { e.preventDefault(); location.href = "/de" + a.getAttribute("href"); }
   });
   matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => applyMedia());
   $("#burger").addEventListener("click", (e) => {
@@ -2755,6 +2529,7 @@ curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)
 "Webhooks": "Webhooks",
 "Contributing": "Mitmachen",
 "Search docs": "Doku durchsuchen",
+"Search the docs": "Doku durchsuchen",
 "Docs page": "Doku-Seite",
 "Previous": "Zurück",
 "Next": "Weiter",
@@ -3452,6 +3227,8 @@ curl -o .env https://raw.githubusercontent.com/Jafoson/Barynt/main/example.env`)
   function setLang(l) {
     LANG = l === "de" ? "de" : "en";
     document.documentElement.lang = LANG;
+    // The tab title follows the language (the release pages set their own).
+    if (/^Barynt: /.test(document.title)) document.title = LANG === "de" ? "Barynt: der Issue-Tracker zum Selberhosten" : "Barynt: the issue tracker you host yourself";
     try { localStorage.setItem("barynt-lang", LANG); } catch {}
     trTree(document.body);
     applyMedia();
