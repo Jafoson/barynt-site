@@ -1,6 +1,6 @@
 // Prepares the site for one Barynt release; `astro build` then builds it.
 //
-//   BARYNT_VERSION=1.0.13 bun run build    # a given release
+//   BARYNT_VERSION=1.0.0 bun run build    # a given release
 //   bun run build                          # the newest published release
 //
 // Everything version-bound comes from that release:

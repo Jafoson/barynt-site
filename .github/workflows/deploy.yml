@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Barynt version, e.g. 1.0.13 (empty = newest release)"
+        description: "Barynt version, e.g. 1.0.0 (empty = newest release)"
         required: false
         type: string
   push:
@@ -48,9 +48,9 @@ jobs:
           BARYNT_VERSION: ${{ github.event.client_payload.version || inputs.version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SITE_CNAME: ${{ vars.SITE_CNAME || 'barynt.dev' }}
-          # Where the docs come from while the newest release has none yet (v1.0.12
-          # predates docs/guide). A release tag with docs wins over this.
-          DOCS_REF: ${{ vars.DOCS_REF || 'release/1.0.13' }}
+          # Where the docs come from until the first release exists (1.0.0).
+          # A release tag with docs wins over this.
+          DOCS_REF: ${{ vars.DOCS_REF || 'main' }}
         run: bun run build
 
       - name: Summary

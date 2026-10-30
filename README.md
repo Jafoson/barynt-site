@@ -37,7 +37,7 @@ only skips this step.
 ```sh
 bun install
 bun run build                        # newest Barynt release → dist/
-BARYNT_VERSION=1.0.12 bun run build  # a given one
+BARYNT_VERSION=1.0.0 bun run build  # a given one
 bun run preview                      # serve dist/
 ```
 
