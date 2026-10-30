@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "barynt-site",
+      "name": "barynt-homepage",
       "dependencies": {
         "@astrojs/markdown-remark": "7.3.5",
         "@astrojs/starlight": "0.42.7",

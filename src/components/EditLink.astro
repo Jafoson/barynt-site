@@ -12,8 +12,8 @@ if (file) {
   const dev = path.match(/^en\/development\/(.+)\.md$/);
   Astro.locals.starlightRoute.editUrl = new URL(
     dev
-      ? `https://github.com/Jafoson/Barynt/edit/main/docs/dev/${dev[1] === "overview" ? "README" : dev[1]}.md`
-      : `https://github.com/Jafoson/Barynt/edit/main/docs/guide/${path}`,
+      ? `https://github.com/barynt-dev/barynt-web/edit/main/docs/dev/${dev[1] === "overview" ? "README" : dev[1]}.md`
+      : `https://github.com/barynt-dev/barynt-web/edit/main/docs/guide/${path}`,
   );
 }
 ---

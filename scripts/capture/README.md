@@ -16,9 +16,9 @@ look changes; the files are committed, the build only copies them.
 
 ```sh
 # 1. a session cookie for the seeded owner (sign-in is magic link only)
-cd /path/to/Barynt
-bun --env-file=.env /path/to/barynt-site/scripts/capture/cookie.ts \
-  <user-id> owner@nimbus.io Mara Velez '#6e63e6' > /path/to/barynt-site/scripts/capture/token
+cd /path/to/barynt-web
+bun --env-file=.env /path/to/barynt-homepage/scripts/capture/cookie.ts \
+  <user-id> owner@nimbus.io Mara Velez '#6e63e6' > /path/to/barynt-homepage/scripts/capture/token
 
 # 2. demo data, then a snapshot every recording starts from
 psql -h localhost -U postgres -d IssueTracker -f demo.sql

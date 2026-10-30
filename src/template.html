@@ -1081,7 +1081,7 @@ footer .about { display: grid; gap: 0.75rem; align-content: start; color: var(--
     <button class="searchbtn" id="searchBtn" type="button" aria-label="Search the docs"><svg class="ico"><use href="#i-search"/></svg><span class="searchbtn-l">Search docs</span><kbd class="no-tr" id="searchKey">Ctrl K</kbd></button>
     <button class="langbtn" id="langBtn" type="button" aria-label="Sprache wechseln / Switch language"><span data-l="en">EN</span><span data-l="de">DE</span></button>
     <button class="iconbtn" id="theme" type="button" aria-label="Toggle light and dark"><svg><use href="#i-sun"/></svg></button>
-    <a class="stars" href="https://github.com/Jafoson/Barynt" target="_blank" rel="noopener"><svg class="ico"><use href="#i-star"/></svg><span class="stars-label">Star on GitHub</span></a>
+    <a class="stars" href="https://github.com/barynt-dev/barynt-web" target="_blank" rel="noopener"><svg class="ico"><use href="#i-star"/></svg><span class="stars-label">Star on GitHub</span></a>
     <button class="iconbtn burger" id="burger" type="button" aria-label="Menu" aria-expanded="false"><svg><use href="#i-menu"/></svg></button>
   </div>
 </header>
@@ -1094,7 +1094,7 @@ footer .about { display: grid; gap: 0.75rem; align-content: start; color: var(--
       <h1>Plan the work. <span class="ul">Own the server.</span></h1>
       <p class="lede">Barynt is an issue tracker in the spirit of Linear and Jira that runs on your own infrastructure. Boards, lists and dashboards, roles down to the project, SSO without an enterprise tier, and an MCP server your AI assistant can talk to.</p>
       <div class="hero-actions">
-        <div class="cmd"><span class="p">$</span><span class="t" id="heroCmd">curl -fsSL https://github.com/Jafoson/Barynt/releases/latest/download/install.sh | sh</span><button type="button" data-copy="heroCmd">Copy</button></div>
+        <div class="cmd"><span class="p">$</span><span class="t" id="heroCmd">curl -fsSL https://github.com/barynt-dev/barynt-web/releases/latest/download/install.sh | sh</span><button type="button" data-copy="heroCmd">Copy</button></div>
         <a class="btn quiet" href="/docs/getting-started/install/">Install guide <svg><use href="#i-arrow"/></svg></a>
       </div>
     </div>
@@ -1430,7 +1430,7 @@ claude mcp add --transport http \
 
     <div class="cta">
       <div><h2>Your tracker, your data, your rules.</h2><p>Free and open source under MIT. Star it, fork it, run it.</p></div>
-      <div class="acts"><a class="btn primary" href="/docs/getting-started/intro/">Get started</a><a class="btn quiet" href="https://github.com/Jafoson/Barynt" target="_blank" rel="noopener">GitHub</a></div>
+      <div class="acts"><a class="btn primary" href="/docs/getting-started/intro/">Get started</a><a class="btn quiet" href="https://github.com/barynt-dev/barynt-web" target="_blank" rel="noopener">GitHub</a></div>
     </div>
   </section>
 </main>
@@ -1456,7 +1456,7 @@ claude mcp add --transport http \
     </div>
     <div><h4>Product</h4><ul><li><a href="#start">Overview</a></li><li><a href="/docs/using-barynt/dashboards/">Dashboards</a></li><li><a href="/docs/using-barynt/shortcuts/">Shortcuts</a></li><li><a href="#releases">Changelog</a></li></ul></div>
     <div><h4>Docs</h4><ul><li><a href="/docs/getting-started/install/">Installer</a></li><li><a href="/docs/getting-started/compose/">Docker Compose</a></li><li><a href="/docs/getting-started/helm/">Kubernetes</a></li><li><a href="/docs/integrations/mcp/">MCP server</a></li><li><a href="/docs/integrations/api/">REST API</a></li></ul></div>
-    <div><h4>Project</h4><ul><li><a href="https://github.com/Jafoson/Barynt" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/Jafoson/Barynt/issues" target="_blank" rel="noopener">Issues</a></li><li><a href="https://github.com/Jafoson/Barynt/blob/main/LICENSE" target="_blank" rel="noopener">License</a></li></ul></div>
+    <div><h4>Project</h4><ul><li><a href="https://github.com/barynt-dev/barynt-web" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://github.com/barynt-dev/barynt-web/issues" target="_blank" rel="noopener">Issues</a></li><li><a href="https://github.com/barynt-dev/barynt-web/blob/main/LICENSE" target="_blank" rel="noopener">License</a></li></ul></div>
   </div>
 </footer>
 
@@ -1516,10 +1516,10 @@ claude mcp add --transport http \
     $("#relNav").innerHTML = notes.map((x, j) => `<a href="#${relSlug(x.version)}"${j === i ? ' aria-current="page"' : ""}><b>${x.version}${j === 0 ? "<em>Latest</em>" : ""}</b><span class="no-tr">${relDate(x.date)}</span></a>`).join("");
     const inst = n.installer
       ? `<section class="rel-install"><h3>Install this release</h3><p>Each command installs or upgrades to exactly this version.</p>
-          <div class="tt-out">${relCmd("New server", `curl -fsSL ${n.installer.script} | sh`)}${relCmd("Existing installation", `barynt upgrade --version ${v}`)}${relCmd("Kubernetes", `helm upgrade --install barynt oci://ghcr.io/jafoson/charts/barynt --version ${v}`)}</div>
+          <div class="tt-out">${relCmd("New server", `curl -fsSL ${n.installer.script} | sh`)}${relCmd("Existing installation", `barynt upgrade --version ${v}`)}${relCmd("Kubernetes", `helm upgrade --install barynt oci://ghcr.io/barynt-dev/charts/barynt --version ${v}`)}</div>
           <div class="rel-links">${n.installer.sums ? `<a href="${n.installer.sums}" target="_blank" rel="noopener">Checksums</a>` : ""}${n.installer.signature ? `<a href="${n.installer.signature}" target="_blank" rel="noopener">Signature</a>` : ""}<a href="${n.url}" target="_blank" rel="noopener">All files</a></div></section>`
       : `<section class="rel-install none"><h3>No one-line installer for this release</h3><p>The installer arrived with a later release. This version runs with Docker Compose and its image:</p>
-          <div class="tt-out">${relCmd("The Docker image of this version", `docker pull ghcr.io/jafoson/barynt:${v}`)}</div>
+          <div class="tt-out">${relCmd("The Docker image of this version", `docker pull ghcr.io/barynt-dev/barynt:${v}`)}</div>
           <div class="rel-links"><a href="/docs/getting-started/compose/">Docker Compose guide</a><a href="${n.url}" target="_blank" rel="noopener">GitHub</a></div></section>`;
     const newer = notes[i - 1], older = notes[i + 1];
     $("#relBody").innerHTML = `<div class="rel-title"><h2 class="no-tr">Barynt ${v}</h2><span class="rn-meta no-tr">${relDate(n.date)} · <a href="${n.url}" target="_blank" rel="noopener">GitHub</a></span></div>
@@ -1794,7 +1794,7 @@ claude mcp add --transport http \
 
   /* ── Self-host terminal: static commands, each one copyable ── */
   {
-    const URL = "https://github.com/Jafoson/Barynt/releases/latest/download/install.sh";
+    const URL = "https://github.com/barynt-dev/barynt-web/releases/latest/download/install.sh";
     const out = $("#hostOut"), copySrc = $("#hostCopy");
     const esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
     // [comment, command] pairs; the command is shown and copied as is.
@@ -1812,7 +1812,7 @@ claude mcp add --transport http \
         ["Check Docker, memory, disk, DNS and health", "barynt doctor"],
       ],
       helm: [
-        ["The same image on Kubernetes, chart on GHCR", "helm install barynt oci://ghcr.io/jafoson/charts/barynt --version __VERSION__ -n barynt --create-namespace"],
+        ["The same image on Kubernetes, chart on GHCR", "helm install barynt oci://ghcr.io/barynt-dev/charts/barynt --version __VERSION__ -n barynt --create-namespace"],
         ["Open it locally", "kubectl port-forward -n barynt svc/barynt 3000:80"],
       ],
     };
@@ -2614,7 +2614,7 @@ claude mcp add --transport http \
 "Backups": "Backups",
 "barynt status and barynt doctor": "barynt status und barynt doctor",
 "terminal output · 1280 × 720": "Terminal-Ausgabe · 1280 × 720",
-"Barynt ships as one docker-compose.yml for local development and production, split by Compose profiles. The images are prebuilt and multi-arch on ghcr.io/jafoson/barynt.": "Barynt kommt als eine docker-compose.yml für lokale Entwicklung und Produktion, aufgeteilt in Compose-Profile. Die Images sind fertig gebaut und multi-arch auf ghcr.io/jafoson/barynt.",
+"Barynt ships as one docker-compose.yml for local development and production, split by Compose profiles. The images are prebuilt and multi-arch on ghcr.io/barynt-dev/barynt.": "Barynt kommt als eine docker-compose.yml für lokale Entwicklung und Produktion, aufgeteilt in Compose-Profile. Die Images sind fertig gebaut und multi-arch auf ghcr.io/barynt-dev/barynt.",
 "A Linux host with Docker and the Compose plugin": "Ein Linux-Host mit Docker und dem Compose-Plugin",
 "Ports 80 and 443 reachable, if you want automatic HTTPS": "Erreichbare Ports 80 und 443, wenn du automatisches HTTPS willst",
 "A domain whose DNS points at the host": "Eine Domain, deren DNS auf den Host zeigt",
@@ -3067,7 +3067,7 @@ claude mcp add --transport http \
 "upgrading": "Upgrades",
 "the app applies database migrations itself when it starts. use": "Die App spielt Datenbank-Migrationen beim Start selbst ein. Mit",
 "backups": "Backups",
-"barynt ships as one docker-compose.yml for local development and production, split by compose profiles. the images are prebuilt and multi-arch on ghcr.io/jafoson/barynt.": "Barynt kommt als eine docker-compose.yml für lokale Entwicklung und Produktion, aufgeteilt in Compose-Profile. Die Images sind fertig gebaut und multi-arch auf ghcr.io/jafoson/barynt.",
+"barynt ships as one docker-compose.yml for local development and production, split by compose profiles. the images are prebuilt and multi-arch on ghcr.io/barynt-dev/barynt.": "Barynt kommt als eine docker-compose.yml für lokale Entwicklung und Produktion, aufgeteilt in Compose-Profile. Die Images sind fertig gebaut und multi-arch auf ghcr.io/barynt-dev/barynt.",
 "a linux host with docker and the compose plugin": "Ein Linux-Host mit Docker und dem Compose-Plugin",
 "ports 80 and 443 reachable, if you want automatic https": "Erreichbare Ports 80 und 443, wenn du automatisches HTTPS willst",
 "a domain whose dns points at the host": "Eine Domain, deren DNS auf den Host zeigt",

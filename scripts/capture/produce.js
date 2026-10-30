@@ -1,4 +1,4 @@
-// Records every screenshot and video for barynt-site, in one language.
+// Records every screenshot and video for barynt-homepage, in one language.
 //   node produce.js en|de [only-name]
 const { open, BASE, cursorScript, glide, boxOf } = require('./common');
 const { execSync } = require('child_process');

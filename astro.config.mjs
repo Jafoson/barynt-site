@@ -23,7 +23,7 @@ export default defineConfig({
       favicon: "/favicon.svg",
       defaultLocale: "root",
       locales: { root: { label: "English", lang: "en" }, de: { label: "Deutsch", lang: "de" } },
-      editLink: { baseUrl: "https://github.com/Jafoson/Barynt/edit/main/docs/guide/" },
+      editLink: { baseUrl: "https://github.com/barynt-dev/barynt-web/edit/main/docs/guide/" },
       sidebar: sidebarFrom(DOCS_DIR),
       components: {
         Header: "./src/components/Header.astro",

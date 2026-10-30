@@ -20,11 +20,11 @@ import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { dirname, join, posix } from "node:path";
 import { marked } from "marked";
 
-const REPO = process.env.BARYNT_REPO || "Jafoson/Barynt";
+const REPO = process.env.BARYNT_REPO || "barynt-dev/barynt-web";
 const NOTES_SHOWN = 5;
 const SEMVER = /^\d+\.\d+\.\d+$/;
 
-const headers: Record<string, string> = { Accept: "application/vnd.github+json", "User-Agent": "barynt-site" };
+const headers: Record<string, string> = { Accept: "application/vnd.github+json", "User-Agent": "barynt-homepage" };
 if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
 
 interface GhRelease { tag_name: string; draft: boolean; prerelease: boolean; published_at: string; html_url: string; assets: { name: string; browser_download_url: string }[] }
