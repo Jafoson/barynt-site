@@ -17,7 +17,7 @@
 
 import { existsSync } from "node:fs";
 import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { dirname, join, posix } from "node:path";
 import { marked } from "marked";
 
 const REPO = process.env.BARYNT_REPO || "Jafoson/Barynt";
@@ -148,18 +148,21 @@ ${page}
   if (process.env.SITE_CNAME) await writeFile("public/CNAME", `${process.env.SITE_CNAME}\n`);
 
   let docs = "";
+  let ref = "main";
   if (process.env.BARYNT_DOCS_DIR) {
     await rm(".barynt/docs", { recursive: true, force: true });
     await cp(process.env.BARYNT_DOCS_DIR, ".barynt/docs/guide", { recursive: true });
+    if (existsSync(join(process.env.BARYNT_DOCS_DIR, "../dev"))) await cp(join(process.env.BARYNT_DOCS_DIR, "../dev"), ".barynt/docs/dev", { recursive: true });
     docs = `local ${process.env.BARYNT_DOCS_DIR}`;
   } else {
     const fallback = process.env.DOCS_REF || "main";
-    if (await fetchDocs(`v${version}`)) docs = `v${version}`;
-    else if (await fetchDocs(fallback)) docs = fallback;
+    if (await fetchDocs(`v${version}`)) docs = ref = `v${version}`;
+    else if (await fetchDocs(fallback)) docs = ref = fallback;
     else throw new Error(`Neither v${version} nor ${fallback} has docs/guide/ in ${REPO}.`);
   }
   await fillMissingImages(".barynt/docs/guide");
-  console.log(`Prepared Barynt ${version}: ${notes.length} release notes, ${images.length} images, docs from ${docs}.`);
+  const dev = await prepareDevDocs(".barynt/docs/dev", ".barynt/docs/guide", ref);
+  console.log(`Prepared Barynt ${version}: ${notes.length} release notes, ${images.length} images, docs from ${docs}${dev ? `, ${dev} developer pages` : ""}.`);
 }
 
 /** docs/guide/ of the Barynt repository at `ref` → .barynt/docs/guide/. */
@@ -170,6 +173,8 @@ async function fetchDocs(ref: string): Promise<boolean> {
   await mkdir(".barynt", { recursive: true });
   await writeFile(".barynt/source.tar.gz", new Uint8Array(await res.arrayBuffer()));
   const tar = Bun.spawnSync(["tar", "-xzf", ".barynt/source.tar.gz", "-C", ".barynt", "--strip-components=1", "--wildcards", "*/docs/guide/*"]);
+  // A tag from before docs/dev existed simply has none (tar's exit code says so).
+  Bun.spawnSync(["tar", "-xzf", ".barynt/source.tar.gz", "-C", ".barynt", "--strip-components=1", "--wildcards", "*/docs/dev/*"]);
   await rm(".barynt/source.tar.gz");
   return tar.exitCode === 0 && existsSync(".barynt/docs/guide/_groups.json");
 }
@@ -192,6 +197,70 @@ async function fillMissingImages(root: string) {
       console.warn(`! ${page}: ${url} missing, using the other language's picture`);
     }
   }
+}
+
+/** The developer docs (docs/dev/, English only, plain Markdown for GitHub) →
+ *  pages of the guide's collection: `en/development/<name>.md`, so they are
+ *  served at /docs/development/<name>/ (and, as English with a notice, under
+ *  /de/docs/development/). The title is the first heading, the description the
+ *  first paragraph; links are rewritten (pages → site, everything else →
+ *  GitHub at `ref`). Returns the number of pages. */
+const DEV_ORDER = ["getting-started", "architecture", "data-model", "authentication", "permissions", "frontend", "backend-services", "api-and-mcp", "testing", "build-and-release", "contributing", "permissions-audit"];
+
+async function prepareDevDocs(src: string, guide: string, ref: string): Promise<number> {
+  if (!existsSync(src)) return 0;
+  const out = join(guide, "en/development");
+  await mkdir(out, { recursive: true });
+  const github = `https://github.com/${REPO}/blob/${ref}/`;
+  const rewrite = (url: string): string => {
+    if (/^(https?:|mailto:|#|\/)/.test(url)) return url;
+    const [path, hash] = url.split("#");
+    const tail = hash ? `#${hash}` : "";
+    if (!path.includes("/") && path.endsWith(".md")) return `/docs/development/${path === "README.md" ? "overview" : path.slice(0, -3)}/${tail}`;
+    const target = posix.normalize(posix.join("docs/dev", decodeURIComponent(path)));
+    const page = target.match(/^docs\/guide\/(en|de)\/(.+)\.md$/);
+    if (page) return `${page[1] === "de" ? "/de" : ""}/docs/${page[2]}/${tail}`;
+    if (target === "docs/guide" || target === "docs/guide/") return `/docs/${tail}`;
+    return `${github}${target}${tail}`;
+  };
+  let count = 0;
+  for (const file of (await readdir(src)).filter((f) => f.endsWith(".md"))) {
+    const name = file === "README.md" ? "overview" : file.slice(0, -3);
+    const lines = (await readFile(join(src, file), "utf8")).split("\n");
+    const h1 = lines.findIndex((l) => l.startsWith("# "));
+    const title = lines[h1].slice(2).trim();
+    const rest = lines.slice(h1 + 1);
+    // The first paragraph is the lead under the title (the site shows the
+    // description there), so it leaves the body — unless it is too long for a
+    // lead, then its first sentence stands in and the body keeps all of it.
+    const start = rest.findIndex((l) => l.trim() !== "");
+    const gap = rest.slice(start).findIndex((l) => l.trim() === "");
+    const end = gap < 0 ? rest.length : start + gap;
+    const plain = rest.slice(start, end).join(" ")
+      .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/[`*_]/g, "").replace(/\s+/g, " ").trim();
+    const short = plain.length <= 300;
+    const description = short ? plain : `${plain.split(/(?<=[.!?])\s/)[0]}`;
+    const content = short ? [...rest.slice(0, start), ...rest.slice(end)] : rest;
+    let fenced = false;
+    const body = content.map((line) => {
+      if (line.startsWith("```")) fenced = !fenced;
+      return fenced || line.startsWith("```") ? line : line.replace(/\]\(([^)\s]+)\)/g, (_, url: string) => `](${rewrite(url)})`);
+    }).join("\n");
+    const order = name === "overview" ? 0 : DEV_ORDER.indexOf(name) + 1 || 99;
+    await writeFile(join(out, `${name}.md`), `---\ntitle: ${JSON.stringify(title)}\ndescription: ${JSON.stringify(description)}\nsidebar:\n  order: ${order}\n---\n${body}`);
+    count++;
+  }
+  // The sidebar group: the guide's own _groups.json, plus this one before "project".
+  const groupsFile = join(guide, "_groups.json");
+  const groups = JSON.parse(await readFile(groupsFile, "utf8")) as Record<string, { en: string; de: string }>;
+  const withDev: typeof groups = {};
+  for (const [key, value] of Object.entries(groups)) {
+    if (key === "project") withDev.development = { en: "Development", de: "Entwicklung" };
+    withDev[key] = value;
+  }
+  if (!withDev.development) withDev.development = { en: "Development", de: "Entwicklung" };
+  await writeFile(groupsFile, JSON.stringify(withDev, null, 2));
+  return count;
 }
 
 const escapeHtml = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

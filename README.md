@@ -42,12 +42,14 @@ bun run preview                      # serve dist/
 ```
 
 `scripts/build.ts` prepares the release (start page → `public/index.html`,
-release images, Barynt's `docs/guide/` at the tag → `.barynt/`), then
+release images, Barynt's `docs/guide/` and `docs/dev/` at the tag → `.barynt/`), then
 `astro build` builds everything into `dist/`. Set `GITHUB_TOKEN` if you hit
 the API's rate limit.
 
 Writing docs: they live in the Barynt repository (`docs/guide/`, see its
-README). To see your changes while you write, point the site at your clone:
+README). The developer docs (`docs/dev/`, English) become the **Development**
+section: `scripts/build.ts` gives each page a title and lead and rewrites its
+links (`prepareDevDocs`). To see your changes while you write, point the site at your clone:
 
 ```sh
 BARYNT_DOCS_DIR=../Barynt/docs/guide bun run dev   # http://localhost:4321/docs/
