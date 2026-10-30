@@ -1,6 +1,6 @@
-# barynt-site
+# barynt-homepage
 
-Start page and documentation ([Starlight](https://starlight.astro.build)) for [Barynt](https://github.com/barynt-dev/Barynt),
+Start page and documentation ([Starlight](https://starlight.astro.build)) for [Barynt](https://github.com/barynt-dev/barynt-web),
 the open-source issue tracker you host yourself. English and German.
 
 The site is built for one Barynt release at a time. Everything that depends on
@@ -14,14 +14,14 @@ the "Latest release" widget and the release notes page (read from
 Barynt: Actions → Release (publish)
   → GitHub release vX.Y.Z, Docker image, Helm chart
   → repository_dispatch "barynt-release" { version: "X.Y.Z" } to this repo
-barynt-site: "Build and deploy"
+barynt-homepage: "Build and deploy"
   → bun run build with BARYNT_VERSION=X.Y.Z: notes and docs/guide/ at vX.Y.Z → dist/
   → GitHub Pages
 ```
 
 The dispatch is the last job of Barynt's `release.yml`. It needs the secret
 `SITE_DISPATCH_TOKEN` in the Barynt repository: a fine-grained token for
-`barynt-dev/barynt-site` with **Contents: read and write** (that's what
+`barynt-dev/barynt-homepage` with **Contents: read and write** (that's what
 `repository_dispatch` requires). Without the secret the release still runs and
 only skips this step.
 
