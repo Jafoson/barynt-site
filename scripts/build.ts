@@ -20,7 +20,7 @@ import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { dirname, join, posix } from "node:path";
 import { marked } from "marked";
 
-const REPO = process.env.BARYNT_REPO || "Jafoson/Barynt";
+const REPO = process.env.BARYNT_REPO || "barynt-dev/Barynt";
 const NOTES_SHOWN = 5;
 const SEMVER = /^\d+\.\d+\.\d+$/;
 
