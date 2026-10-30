@@ -1,4 +1,4 @@
-<title>Barynt</title>
+<title>Barynt: the issue tracker you host yourself</title>
 <meta name="description" content="Barynt is an open-source issue tracker you host yourself.">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3227,6 +3227,8 @@ claude mcp add --transport http \
   function setLang(l) {
     LANG = l === "de" ? "de" : "en";
     document.documentElement.lang = LANG;
+    // The tab title follows the language (the release pages set their own).
+    if (/^Barynt: /.test(document.title)) document.title = LANG === "de" ? "Barynt: der Issue-Tracker zum Selberhosten" : "Barynt: the issue tracker you host yourself";
     try { localStorage.setItem("barynt-lang", LANG); } catch {}
     trTree(document.body);
     applyMedia();
